@@ -1,3 +1,10 @@
+'use strict';
+
+// --------------
+// Dependencies
+// --------------
+const Channel = require('./channel.js');
+
 const Team = class TEAM extends Channel {
 	constructor(config = {}) {
 		super({ name: 'Team' });
@@ -119,3 +126,4 @@ const Team = class TEAM extends Channel {
 Team.prototype.texts = {
 	
 };
+module.exports = Team;

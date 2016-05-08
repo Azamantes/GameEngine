@@ -1,6 +1,15 @@
-const Character = class CHARACTER {
+'use strict';
+
+// --------------
+// Dependencies
+// --------------
+// const Channel = require('./channel.js');
+
+class Character {
 	constructor(config = {}) {
 		this.world = config.world;
+
+		this.connection = null; // for handling socket connection
 
 		this.id = config.id;
 		this.name = config.name;
@@ -237,12 +246,25 @@ const Character = class CHARACTER {
 	// LISTENERS
 	// ----------
 	listenChat(value) {
-		console.log(this.location.name + value);
+		this.connection.unicast({
+			event: 'location:chat',
+			message: this.location.name + value
+		});
+		// console.log(this.location.name + value);
 	}
 	listenTeam(message) {
-		console.log(this.team.name + message);
+		this.connection.unicast({
+			event: 'team:chat',
+			message: this.team.name + message
+		});
+		// console.log(this.team.name + message);
 	}
 	listenTeamMemberStatus(message) {
-		console.log(message);
+		this.connection.unicast({
+			event: 'team:membersStatus',
+			message: message
+		});
+		// console.log(message);
 	}
 };
+module.exports = Character;

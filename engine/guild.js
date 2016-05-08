@@ -1,3 +1,11 @@
+'use strict';
+
+// --------------
+// Dependencies
+// --------------
+const Channel = require('./channel.js');
+const Team = require('./team.js');
+
 const Guild = class GUILD extends Channel { // extends Team
 	constructor(config = {}) {
 		super(config);
@@ -98,3 +106,5 @@ Guild.prototype.errors = {
 	leave: `You cannot leave your own guild.`,
 	assign: 'You cannot assign rank to yourself.',
 };
+
+module.exports = Guild;

@@ -1,4 +1,8 @@
-const Channel = class CHANNEL {
+'use strict';
+
+const Check = require('./check.js');
+
+class Channel {
 	constructor(config) {
 		this.name = '[' + config.name + ']: ';
 		this.events = {};
@@ -46,3 +50,4 @@ const Channel = class CHANNEL {
 		return false;
 	}
 };
+module.exports = Channel;

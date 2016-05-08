@@ -1,3 +1,11 @@
+'use strict';
+
+// --------------
+// Dependencies
+// --------------
+const Channel = require('./channel.js');
+const Character = require('./character.js');
+
 const Location = class LOCATION extends Channel {
 	constructor(config = {}) {
 		super(config);
@@ -36,3 +44,5 @@ const Location = class LOCATION extends Channel {
 		return true;
 	}
 };
+
+module.exports = Location;

@@ -14,3 +14,4 @@ const Check = {
 		return Object.prototype.toString.call(value);
 	}
 };
+module.exports = Check;

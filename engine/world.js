@@ -1,4 +1,15 @@
-const World = class WORLD {
+'use strict';
+
+// --------------
+// Dependencies
+// --------------
+const Channel = require('./channel.js');
+const Character = require('./character.js');
+const Guild = require('./guild.js');
+const Location = require('./location.js');
+const Team = require('./team.js');
+
+class World {
 	constructor() {
 		this.locationsCount = 0;
 		this.teamsCount = 0;
@@ -75,3 +86,9 @@ const World = class WORLD {
 		return this.guilds[id] || null;
 	}
 };
+// World.prototype.Channel = require('./channel.js');
+// World.prototype.Character = Character;
+// World.prototype.Guild = require('./guild.js');
+// World.prototype.Location = require('./location.js');
+// World.prototype.Team = require('./team.js');
+module.exports = World;
