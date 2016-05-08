@@ -1,58 +1,109 @@
-Swiat:
-	locations { Number id: Location location }
-		create
-		get
-	players { Number id: Character player }
-		create
-		destroy
-	playerTeams { Number id: Team playerTeam }
-		create
-		destroy
-	guilds { Number id: Guild guild }
+GameInstance:
+	locationsCount : Number
+	teamsCount : Number
+	guildsCount : Number
 
+	// Objects { key: id, value: reference }
+	locations : Object
+	players : Object
+	teams : Object
+	guilds : Object
 
-
-
-// ---------------------------------
-Location(Object config)
-	id : Number
-	nazwa : String
-	players : Character Array
-	// lista itemow do zebrania
-	// lista statuł
-	locations : Location Array
 Functions:
-	add player(callback) : Boolean
-	remove player(callback) : Boolean
-	// notifyPlayers : 
-	// powiadom wszystkich graczy o jakims zdarzeniu
-	// zaktualizuj item collectible, jesli zostal zebrany
+	createLocation(Object config) : Location
+	
+	getLocation(Number id) : Location
+	
+	createPlayer(Object config) : Character
+	
+	getPlayer(Number id) : Character
+	
+	destroyPlayer(Character player) : Boolean
+	
+	createTeam(Object config) : Team
+	
+	destroyTeam(Team team) : Boolean
+	
+	createGuild(Object config) : Guild
+	
+	getGuild(Number id) : Guild
+
 // ---------------------------------
 Channel(Object config) // created by modules independently, not stored in the World object
+	name : String
 	events : Object
+
 Functions:
 	listen(String event, Function listener) : Boolean
 		allows the [listener] to listen for the [event]
-	forget(String event, Function listener) : Boolean
-		remove the [listener] from [event] list
+	
 	shout(String event, Object message) : Boolean
 		passes given message to everyone listening to [event]
+	
+	delete(String event, Function listener) : Boolean
+		remove the [listener] from [event] list
 
 // ---------------------------------
-Team(Object config)
+Location(Object config) extends Channel(Object config)
 	id : Number
-	type : Boolean
-	creator: Number
-	members : Array of Character
+	nazwa : String
+	players : Object
+	// lista itemow do zebrania
+	// lista statuł
+	locations : Location[]
+
 Functions:
-	add member(Character player) : Boolean
-		adds [player] to list of members
-	remove member(Character player) : Boolean
-		remove [player] from list of members
-	pass leadership(Character player) : Boolean
-		changes this.creator to [player]
-	change type(Number type) : Boolean
-		changes this.type to [type]
+	enter(Character player) : Boolean
+	leave(Character player) : Boolean
+	kick(Character player) : Boolean (always true)
+	// notifyPlayers : 
+	// powiadom wszystkich graczy o jakims zdarzeniu
+	// zaktualizuj item collectible, jesli zostal zebrany
+
+// ---------------------------------
+Team(Object config) extends Channel
+	id : Number
+	type : Boolean (false - Anarchy, true - Leadership)
+	creator : Character
+	members : Character[]
+	invitationCount : Number
+	invitations : Object
+
+Functions:
+	invite(Character player_1, Character player_2) : Boolean
+		attempts to send team invitation to the [player_2]
+	
+	sendInvitation(Character player) : Boolean (always true)
+		sends invitation to the [player]
+	
+	acceptInvitation(Number number) : Boolean (always true)
+		callback to call upon invitation acceptance
+	
+	refuseInvitation(Number number) : Boolean (always true)
+		callback to call upon invitation refusal
+	
+	join(Character player) : Boolean
+		attempts to let the [player] join
+	
+	leave(Character player) : Boolean
+		attempts to let the [player] leave
+	
+	kick(Character player_1, Character player_2) : Boolean
+		attempts to kick [player_2] out of the team
+	
+	addMember(Character player, Function[] listeners) : Boolean (always true)
+		adds [player] to the memberlist and cached his [listeners]
+
+	removeMember(Character player) : Boolean (always true)
+		removes [player] from memberlist and stops listening to his callbacks
+
+	passLeadership(Character player_1, Character player_2) : Boolean
+		attempts to pass leadership from [player_1] to [player_2]
+		informs whole team upon the change
+
+	changeType(Character player, Boolean type) : Boolean
+		attempts to change team type
+	
 
 // ---------------------------------
 Character(Object config)
@@ -115,6 +166,7 @@ Character(Object config)
 	guild : Guild // guild given by the world;
 	team : Team // team given by the World
 	location : Location // location given by the World.
+
 Function:
 	check : Boolean
 		checks if all properties are set properly
@@ -158,11 +210,11 @@ Listeners:
 
 
 	// ---------------------------------
-Gildia
+Guild(Object config)
 	id : Number id
 	nazwa : String name
 	creator : Number id
-	lista czlonkow : Number Array [id, id, id, ...]
+	lista czlonkow : Number[]
 Funkcje:
 	dodaj czlonka : Boolean
 	usun czlonka : Boolean
