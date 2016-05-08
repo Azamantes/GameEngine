@@ -167,11 +167,12 @@ Character(Object config)
 	team : Team // team given by the World
 	location : Location // location given by the World.
 
-Function:
+Functions:
 	check : Boolean
 		checks if all properties are set properly
 	start living() : Boolean
 		check === true -> set up listeners
+	
 	// ---------
 	// TEAM
 	// ---------
@@ -191,9 +192,7 @@ Function:
 	receiveInvitation(Object invitation) : Boolean(always true) // this is a generic function, works with any invitation, as long as it has the 2 properties (message, number) and 2 callbacks (accept, refuse)
 		caches invitation and sends it via websocket to the client, so that he can see it
 	invite(Object invitation) : Boolean (always true) // this is actually on the client side, not in the engine on the server
-
-
-
+	
 	// ---------
 	// LOCATION
 	// ---------
@@ -204,18 +203,44 @@ Function:
 
 Listeners:
 	locationChat(String value) : Boolean
-		console.log(value);
+	listenTeam(String value) : Boolean
+	listenTeamStatus(String value) : Boolean
 
 
 
-
-	// ---------------------------------
+// ---------------------------------
 Guild(Object config)
-	id : Number id
-	nazwa : String name
-	creator : Number id
-	lista czlonkow : Number[]
-Funkcje:
-	dodaj czlonka : Boolean
-	usun czlonka : Boolean
-	zmien wlasciciela : Boolean
+	id : Number
+	name : String
+	creator : Number
+	members : Object[] { id: Number, status: Boolean }
+	ranks : Object // list of possible ranks
+	membersRanks : Object // maps members -> their ranks
+	invitations : Object
+	invitationsCount : Number
+	money : Number
+
+Functions:
+	invite(Character allegedCreator, Character player) : Boolean
+	sendInvitation(Characterp player) : Boolean (always true) === Team.prototype.sendInvitation
+	acceptInvitation(Number number) : Boolean (always true) === Team.prototype.acceptInvitation
+	refuseInvitation(Number number) : Boolean (always true) === Team.prototype.refusetInvitation
+	leave(Character player) : Boolean
+		attempts to let the [player] leave
+	
+	kick(Character player_1, Character player_2) : Boolean
+		attempts to kick [player_2] out of the team
+	
+	addMember(Character player, Function[] listeners) : Boolean (always true)
+		adds [player] to the memberlist and cached his [listeners]
+
+	removeMember(Character player) : Boolean (always true)
+		removes [player] from memberlist and stops listening to his callbacks
+
+	assignRank(Character player, Number rank) : Boolean
+		attempts to assign [rank] to the [player]
+
+	donate(Character player, Number money) : Boolean
+		attempts to let [player] donate [money] of gold to the guild treasure house
+
+// ---------------------------------

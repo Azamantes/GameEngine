@@ -26,7 +26,7 @@ const World = class WORLD {
 			return null;
 		}
 		config.world = this;
-		config.location = this.locations[config.location];
+		config.location = this.locations[config.location] || null;
 		config.team = this.teams[config.team] || null;
 		config.guild = this.guilds[config.guild] || null;
 

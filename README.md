@@ -5,7 +5,7 @@ This engine is nowhere close to end, even to the middle. I just started. I got m
 
 What you can see here is merely the logic of my game. I'm not even going to dive into the graphical stuff yet.
 
-I want this to be something like Baldur's Gate but with all the MMORPG features. It's going to look almost the same, isometric view etc. Control over your character will be handled by both keyboard and mouse.
+View is going to be isometric (probably). Control over your character will be handled by both keyboard and mouse.
 
 // ----------------
 

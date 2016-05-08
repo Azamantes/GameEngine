@@ -9,6 +9,11 @@ const Team = class TEAM extends Channel {
 		this.members = [this.creator];
 		this.invitationCount = 0;
 		this.invitations = {};
+
+		this.listeners = {
+			accept: this.acceptInvitation.bind(this),
+			refuse: this.refuseInvitation.bind(this),
+		};
 	}
 	invite(allegedCreator, player) { // player interface
 		if(player.team !== null) {
@@ -27,22 +32,25 @@ const Team = class TEAM extends Channel {
 		this.invitations[number] = player;
 		player.receiveInvitation({
 			number,
-			message: 'You have received team invitation from ' + this.creator.name + '.\nDo you accept it?',
-			accept: this.acceptInvitation.bind(this),
-			refuse: this.refuseInvitation.bind(this)
+			message: this.generateInvitation(),
+			accept: this.listeners.accept,
+			refuse: this.listeners.refuse,
 		});
 		return true;
+	}
+	generateInvitation() {
+		return 'You have received team invitation from ' + this.creator.name + '.\nDo you accept it?';
 	}
 	acceptInvitation(number) { // player interface
 		const player = this.invitations[number];
 		this.addMember(player);
-		console.log(player.name + ' joined team.');
+		console.log(player.name + ' joined.');
 		this.invitations[number] = null;
 		return true;
 	}
 	refuseInvitation(number) { // player interface
 		const player = this.invitations[number];
-		console.log(player.name + ' refused team invitation.');
+		console.log(player.name + ' refused invitation.');
 		this.invitations[number] = null;
 		return true;
 	}

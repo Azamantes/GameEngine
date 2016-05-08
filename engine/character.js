@@ -68,7 +68,7 @@ const Character = class CHARACTER {
 		this.listeners = {
 			chat: this.listenChat.bind(this),
 			team: this.listenTeam.bind(this),
-			status: this.listenTeamStatus.bind(this),
+			status: this.listenTeamMemberStatus.bind(this),
 		};
 		this.locationListeners = ['chat', 'status'];
 		this.teamListeners = ['team'];
@@ -143,6 +143,7 @@ const Character = class CHARACTER {
 	// LOCATION
 	// ----------
 	appearInLocation() {
+		if(this.location === null) return;
 		this.location.enter(this);
 		this.location.listen('chat', this.listeners.chat);
 	}
@@ -209,6 +210,12 @@ const Character = class CHARACTER {
 	// ----------
 	// GUILD
 	// ----------
+	createTeam(config) {
+		if(this.guild !== null) console.warn('Player#' + this.id + ' is in a team already.');
+		config.creator = this;
+		this.team = this.world.createTeam(config);
+		this.manageListening({ type: 'start', channel: this.team, array: this.teamListeners });
+	}
 	inviteToGuild(player) {
 		if(this.guild === null) {
 			return !!console.warn('You are no in a guild.');
@@ -235,7 +242,7 @@ const Character = class CHARACTER {
 	listenTeam(message) {
 		console.log(this.team.name + message);
 	}
-	listenTeamStatus(message) {
+	listenTeamMemberStatus(message) {
 		console.log(message);
 	}
 };
