@@ -10,13 +10,6 @@ const Team = class TEAM extends Channel {
 		this.invitationCount = 0;
 		this.invitations = {};
 	}
-	broadcast(event, message) {
-		const array = this.events[event];
-		if(!Array.isArray(array)) return;
-		let i = array.length;
-		while(--i + 1) array[i](message);
-		return true;
-	}
 	invite(allegedCreator, player) { // player interface
 		if(player.team !== null) {
 			return !!console.warn('This player is in a team already.');
@@ -24,7 +17,7 @@ const Team = class TEAM extends Channel {
 		if(this.type && this.creator !== allegedCreator) {
 			return !!console.warn('You are not the team leader and thus cannot invite people.');
 		}
-		if(this.members.indexOf(player) !== -1) {
+		if(~this.members.indexOf(player)) {
 			return !!console.warn(player.name + ' is in your team already.');
 		}
 		return this.sendInvitation(player);
@@ -79,20 +72,20 @@ const Team = class TEAM extends Channel {
 	addMember(player, listeners) {
 		this.members.push(player);
 		player.team = this;
-		this.broadcast('chat', this.name + player.name + ' joined.');
+		this.shout('chat', this.name + player.name + ' joined.');
 		return true;
 	}
 	removeMember(player) {
 		this.members.splice(this.members.indexOf(player), 1);
 		player.team = null;
-		this.broadcast('chat', this.name + player.name + ' left.');
+		this.shout('chat', this.name + player.name + ' left.');
 		return true;
 	}
 	passLeadership(allegedCreator, player) {
 		if(this.creator !== allegedCreator) {
 			return !!console.warn('You are not the team leader.');
 		}
-		if(this.members.indexOf(player) === -1) {
+		if(~this.members.indexOf(player)) {
 			return !!console.warn('This player is not in your team.');
 		}
 		if(this.creator !== allegedCreator && !this.type) {
@@ -118,21 +111,3 @@ const Team = class TEAM extends Channel {
 Team.prototype.texts = {
 	
 };
-
-/*
-
-jak wyslac zaproszenie:
-trzeba zrobic obiekt zaproszenie
-zapisac go:
-	kogo zapraszamy
-
-pokazujemy zaproszenie graczowi:
-	tresc zaproszenia
-
-odbieramy zaproszenie
-	jesli decyzja === true, to wykonujemy cokolwiek mielismy na mysli zapraszajac tego gracza
-
-no dobrze, ale jak odroznic od siebie 2 rozne wyslane pod rzad zaproszenia?
-doczepic liczbe.
-
-*/

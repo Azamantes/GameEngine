@@ -23,7 +23,10 @@ const Channel = class CHANNEL {
 		if(!isArray) {
 			return false;
 		}
-		this.events[event].map(listener => listener(message));
+		
+		const array = this.events[event];
+		let i = array.length;
+		while(--i + 1) array[i](message);
 		return true;
 	}
 	delete(event, listener) {

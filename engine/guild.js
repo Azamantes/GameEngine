@@ -13,13 +13,6 @@ const Guild = class GUILD extends Channel { // extends Team
 		this.money = 0;
 	}
 	// Same as in the Team class... but not all were copied.
-	broadcast(event, message) {
-		const array = this.events[event];
-		if(!Array.isArray(array)) return;
-		let i = array.length;
-		while(--i + 1) array[i](message);
-		return true;
-	}
 	invite(allegedCreator, player) {
 		if(player.guild !== null) {
 			return !!console.warn('This player is in a guild already.');
@@ -27,7 +20,7 @@ const Guild = class GUILD extends Channel { // extends Team
 		if(this.type && this.creator !== allegedCreator) {
 			return !!console.warn('You are not the guild creator and thus cannot invite people.');
 		}
-		if(this.members.indexOf(player) !== -1) {
+		if(~this.members.indexOf(player)) { // same as members.indexOf(player) !== -1
 			return !!console.warn(player.name + ' is in this guild already.');
 		}
 		return this.sendInvitation(player);
@@ -71,13 +64,13 @@ const Guild = class GUILD extends Channel { // extends Team
 	addMember(player, listeners) {
 		this.members.push(player);
 		player.team = this;
-		this.broadcast('chat', this.name + player.name + ' joined.');
+		this.shout('chat', this.name + player.name + ' joined.');
 		return true;
 	}
 	removeMember(player, kicked = false) {
 		this.members.splice(this.members.indexOf(player), 1);
 		player.team = null;
-		this.broadcast('chat', this.name + player.name + kicked? ' was kicked away.' : ' left.');
+		this.shout('chat', this.name + player.name + kicked? ' was kicked away.' : ' left.');
 		return true;
 	}
 	// Unique to Guild

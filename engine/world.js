@@ -35,6 +35,26 @@ const World = class WORLD {
 	getPlayer(id) {
 		return this.players[id] || null;
 	}
+	destroyPlayer(player) {
+		if(this.player.online) {
+			return !!console.warn('Attempt of disconnecting a player without his knowledge.');
+		}
+
+		const team = player.team;
+		if(team.type && team.creator === player) {
+			team.changeType(false); //change team to Anarchy so that people can leave
+			player.leaveTeam(team);
+			team.creator = null; // remove pointer, so that it doesn't persist in memory
+		}
+
+		const location = player.location;
+		player.manageListening({ type: 'stop', channel: location, array: player.listeners.chat });
+		location.kick(player);
+		
+		player.guild.shout('status', player.name + ' went home.');
+		this.players[player] = null;
+		return true;
+	}
 	
 	// TEAMS
 	createTeam(config) {
@@ -43,6 +63,7 @@ const World = class WORLD {
 	}
 	destroyTeam(team) {
 		this.teams[team.id] = undefined;
+		return true;
 	}
 	
 	// GUILDS

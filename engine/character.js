@@ -41,7 +41,7 @@ const Character = class CHARACTER {
 			elements: {},
 			skills: {},
 			professions: {},
-		}; // 
+		};
 
 		// state
 		this.mindstate = 0; // bit flags
@@ -67,9 +67,10 @@ const Character = class CHARACTER {
 		// Cache
 		this.listeners = {
 			chat: this.listenChat.bind(this),
-			team: this.listenTeam.bind(this)
+			team: this.listenTeam.bind(this),
+			status: this.listenTeamStatus.bind(this),
 		};
-		this.locationListeners = ['chat'];
+		this.locationListeners = ['chat', 'status'];
 		this.teamListeners = ['team'];
 
 		// start living :)
@@ -233,6 +234,8 @@ const Character = class CHARACTER {
 	}
 	listenTeam(message) {
 		console.log(this.team.name + message);
-		// this.team.forget();
+	}
+	listenTeamStatus(message) {
+		console.log(message);
 	}
 };
