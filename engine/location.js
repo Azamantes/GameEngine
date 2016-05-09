@@ -36,6 +36,7 @@ const Location = class LOCATION extends Channel {
 		if(!isHere) {
 			return !!console.warn('This player is not in this location.');
 		}
+		
 		this.players[player.id] = null;
 		return true;
 	}

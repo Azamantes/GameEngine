@@ -3,14 +3,14 @@
 // --------------
 // Dependencies
 // --------------
-// const Channel = require('./channel.js');
+const Channel = require('./channel.js');
 
 class Character {
 	constructor(config = {}) {
-		this.world = config.world;
+		// this.world = config.world;
 
-		this.connection = null; // for handling socket connection
-
+		this.connection = config.connection; // for handling socket connection
+		// this.online = true;
 		this.id = config.id;
 		this.name = config.name;
 		this.alignment = 0;
@@ -155,6 +155,8 @@ class Character {
 		if(this.location === null) return;
 		this.location.enter(this);
 		this.location.listen('chat', this.listeners.chat);
+		this.location.shout('chat', 'Welcome!');
+		console.log('location listeners:', this.location.events);
 	}
 	enterLocation(id) {
 		const location = this.world.getLocation(id);

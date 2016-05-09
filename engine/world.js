@@ -32,38 +32,54 @@ class World {
 	
 	//PLAYERS
 	createPlayer(config) {
+
+		config.id = ~~config.id;
+		config.location = ~~config.location;
+
 		if(this.players[config.id]){
 			console.error('Player#' + config.id + ' already exists.'); // false
 			return null;
 		}
-		config.world = this;
+		// config.world = this;
+		
+		
 		config.location = this.locations[config.location] || null;
 		config.team = this.teams[config.team] || null;
 		config.guild = this.guilds[config.guild] || null;
 
-		return this.players[config.id] = new Character(config); // returns player
+		const player = new Character(config);
+		// console.log('Stworzono nowego gracza:', player);
+
+		return this.players[player.id] = player; // returns player
 	}
 	getPlayer(id) {
 		return this.players[id] || null;
 	}
 	destroyPlayer(player) {
-		if(this.player.online) {
-			return !!console.warn('Attempt of disconnecting a player without his knowledge.');
-		}
+		// if(this.player.online) {
+		// 	return !!console.warn('Attempt of disconnecting a player without his knowledge.');
+		// }
 
 		const team = player.team;
-		if(team.type && team.creator === player) {
-			team.changeType(false); //change team to Anarchy so that people can leave
-			player.leaveTeam(team);
-			team.creator = null; // remove pointer, so that it doesn't persist in memory
+		if(team !== null){
+			if(team.type && team.creator === player) {
+				team.changeType(false); //change team to Anarchy so that people can leave
+				player.leaveTeam(team);
+				team.creator = null; // remove pointer, so that it doesn't persist in memory
+			}
 		}
 
-		const location = player.location;
-		player.manageListening({ type: 'stop', channel: location, array: player.listeners.chat });
-		location.kick(player);
+		player.manageListening({ type: 'stop', channel: player.location, array: player.locationListeners });
+		player.location.kick(player);
+
+		// console.log(location.events);
 		
-		player.guild.shout('status', player.name + ' went home.');
-		this.players[player] = null;
+		if(player.guild !== null) {
+			player.guild.shout('status', player.name + ' went home.');	
+		}
+		
+		this.players[player.id] = null;
+		console.log('Player #' + this.player.id + ' left the game.');
 		return true;
 	}
 	

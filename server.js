@@ -40,6 +40,9 @@ websocket.on('connection', (ws) => {
 	var user = new User({ socket: ws });
 
 	ws.on('message', user.handleMessage.bind(user));
+	ws.on('close', function(a, b) {
+		user.disconnect();
+	});
 });
 
 const User = class USER {
@@ -49,15 +52,16 @@ const User = class USER {
 		this.player = null;
 	}
 	handleMessage(data) {
-		try {
+		// try {
 			this.execute(data);
-		} catch(error) {
-			console.warn(error.message);
-		}
+		// } catch(error) {
+			// console.warn(error.message);
+		// }
 	}
 	execute(object) {
 		const data = JSON.parse(object);
 		const event = data.event;
+		console.log('nowe polaczenie?', object);
 		this.events.has(event) && this[event](data);
 	}
 	unicast(data) { // void
@@ -72,20 +76,27 @@ const User = class USER {
 	// -----------
 	connect(data) {
 		if(this.connected) return;
-		if(!Check.this(data) === Check.object){
+		if(Check.this(data) !== Check.object){
 			console.log('user.connect -> data is not an object.');
 		}
-		const config = data.config;
-		config.id = ~~config.id;
-		config.location = ~~config.location;
-		this.player = Game.createPlayer(config);
-		this.player.connection = this;
+
+		data.config.connection = this;
+		this.player = Game.createPlayer(data.config);
+		if(this.player === null) { // refuse connection, player already exists.
+			console.log('rozlaczam');
+			this.disconnect();
+		}
+		
 		this.connected = true;
 	}
 	disconnect() {
-		this.player.world.destroyPlayer(this.player);
-		this.player = null;
+		this.player.online = false;
+		if(this.player) {
+			Game.destroyPlayer(this.player);
+			this.player = null;
+		}
 		this.socket.terminate();
+		// try { this.socket.terminate(); } catch(error) {}
 	}
 	showMyCharacter() {
 		console.log(this.player);

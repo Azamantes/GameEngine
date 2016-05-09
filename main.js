@@ -74,8 +74,12 @@ websocket.onmessage = function(object){
 	user.addMessage(data.message);
 	// User[data.event](data);
 };
+websocket.onclose = function() {
+	window.location.href = window.location.href;
+};
 window.addEventListener('beforeunload', function(){
-	websocket.sendJSON({ event: 'disconnect' });
+	// websocket.sendJSON({ event: 'disconnect' });
+	// if(websocket.)
 	websocket.close();
 });
 
