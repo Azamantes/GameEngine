@@ -32,33 +32,25 @@ class World {
 	
 	//PLAYERS
 	createPlayer(config) {
-
 		config.id = ~~config.id;
-		config.location = ~~config.location;
-
 		if(this.players[config.id]){
 			console.error('Player#' + config.id + ' already exists.'); // false
 			return null;
-		}
-		// config.world = this;
-		
-		
+		}		
+
+		config.location = ~~config.location;
 		config.location = this.locations[config.location] || null;
 		config.team = this.teams[config.team] || null;
 		config.guild = this.guilds[config.guild] || null;
-
-		const player = new Character(config);
-		// console.log('Stworzono nowego gracza:', player);
-
-		return this.players[player.id] = player; // returns player
+		return this.players[player.id] = new Character(config); // returns player
 	}
 	getPlayer(id) {
 		return this.players[id] || null;
 	}
 	destroyPlayer(player) {
-		// if(this.player.online) {
-		// 	return !!console.warn('Attempt of disconnecting a player without his knowledge.');
-		// }
+		if(this.player.online) {
+			return !!console.warn('Attempt of disconnecting a player without his knowledge.');
+		}
 
 		const team = player.team;
 		if(team !== null){
@@ -71,9 +63,6 @@ class World {
 
 		player.manageListening({ type: 'stop', channel: player.location, array: player.locationListeners });
 		player.location.kick(player);
-
-		// console.log(location.events);
-		
 		if(player.guild !== null) {
 			player.guild.shout('status', player.name + ' went home.');	
 		}
@@ -102,9 +91,4 @@ class World {
 		return this.guilds[id] || null;
 	}
 };
-// World.prototype.Channel = require('./channel.js');
-// World.prototype.Character = Character;
-// World.prototype.Guild = require('./guild.js');
-// World.prototype.Location = require('./location.js');
-// World.prototype.Team = require('./team.js');
 module.exports = World;

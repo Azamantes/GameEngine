@@ -1,41 +1,27 @@
 'use strict';
 
-// ----------
-// ALIASES
-// ----------
-// const c = console;
-
+// --------------
+// SERVER CONFIG
+// --------------
 const Server = require('ws').Server;
 const websocket = new Server({
 	port: 8080
 });
 
+// ------------------
+// CREATE GAME WORLD
+// ------------------
 const Check = require('./engine/check.js');
 const World = require('./engine/world.js');
 const Game = new World();
 
-// -------------
-// Create locations
-// -------------
 Game.createLocation({ name: 'Wioska' });
 Game.createLocation({ name: 'Miasto' });
 
-// -------------
-// TESTING
-// -------------
-// console.log(Game.createPlayer({
-// 	id: 1,
-// 	name: 'Mateusz',
-// 	location: 1,
-// 	guild: null,
-// 	team: null
-// }));
 
-
-
-
-
-
+// -------------------
+// HANDLE CONNECTIONS
+// -------------------
 websocket.on('connection', (ws) => {
 	var user = new User({ socket: ws });
 
@@ -51,7 +37,7 @@ const User = class USER {
 		this.socket = config.socket;
 		this.player = null;
 	}
-	handleMessage(data) {
+	handleMessage(data) { // when 'production-ready' this has to be in try-catch
 		// try {
 			this.execute(data);
 		// } catch(error) {
@@ -71,9 +57,9 @@ const User = class USER {
 		this.socket.send(JSON.stringify(data));
 	}
 
-	// -----------
+	// -------------------------------------
 	// WEBSOCKET LISTENERS (allowed events)
-	// -----------
+	// -------------------------------------
 	connect(data) {
 		if(this.connected) return;
 		if(Check.this(data) !== Check.object){

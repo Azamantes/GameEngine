@@ -7,10 +7,8 @@ const Channel = require('./channel.js');
 
 class Character {
 	constructor(config = {}) {
-		// this.world = config.world;
-
 		this.connection = config.connection; // for handling socket connection
-		// this.online = true;
+
 		this.id = config.id;
 		this.name = config.name;
 		this.alignment = 0;
@@ -88,7 +86,8 @@ class Character {
 	cacheListener(event, callback) {
 		this.cachedListeners[event].push(callback);
 	}
-	// ---------- 
+
+	// ----------
 	// TEAM
 	// ----------
 	createTeam(config) {
@@ -148,6 +147,7 @@ class Character {
 		else invitation.refuse(invitation.number);
 		return true;
 	}
+
 	// ---------- 
 	// LOCATION
 	// ----------
@@ -218,6 +218,7 @@ class Character {
 		}
 		return true;
 	}
+
 	// ----------
 	// GUILD
 	// ----------
@@ -252,21 +253,18 @@ class Character {
 			event: 'location:chat',
 			message: this.location.name + value
 		});
-		// console.log(this.location.name + value);
 	}
 	listenTeam(message) {
 		this.connection.unicast({
 			event: 'team:chat',
 			message: this.team.name + message
 		});
-		// console.log(this.team.name + message);
 	}
 	listenTeamMemberStatus(message) {
 		this.connection.unicast({
 			event: 'team:membersStatus',
 			message: message
 		});
-		// console.log(message);
 	}
 };
 module.exports = Character;
