@@ -42,13 +42,13 @@ class World {
 		config.location = this.locations[config.location] || null;
 		config.team = this.teams[config.team] || null;
 		config.guild = this.guilds[config.guild] || null;
-		return this.players[player.id] = new Character(config); // returns player
+		return this.players[config.id] = new Character(config); // returns player
 	}
 	getPlayer(id) {
 		return this.players[id] || null;
 	}
 	destroyPlayer(player) {
-		if(this.player.online) {
+		if(player.online) {
 			return !!console.warn('Attempt of disconnecting a player without his knowledge.');
 		}
 
@@ -68,7 +68,7 @@ class World {
 		}
 		
 		this.players[player.id] = null;
-		console.log('Player #' + this.player.id + ' left the game.');
+		console.log('Player #' + player.id + ' left the game.');
 		return true;
 	}
 	

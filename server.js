@@ -70,17 +70,18 @@ const User = class USER {
 		this.player = Game.createPlayer(data.config);
 		if(this.player === null) { // refuse connection, player already exists.
 			console.log('rozlaczam');
-			this.disconnect();
+			return this.disconnect();
 		}
 		
 		this.connected = true;
 	}
 	disconnect() {
-		this.player.online = false;
 		if(this.player) {
+			this.player.online = false;
 			Game.destroyPlayer(this.player);
 			this.player = null;
 		}
+		console.log('disconnecting...');
 		this.socket.terminate();
 		// try { this.socket.terminate(); } catch(error) {}
 	}
