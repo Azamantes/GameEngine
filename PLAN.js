@@ -170,17 +170,17 @@ Character(Object config)
 Functions:
 	check : Boolean
 		checks if all properties are set properly
-	start living() : Boolean
+	startLiving() : Boolean
 		check === true -> set up listeners
 	
 	// ---------
 	// TEAM
 	// ---------
-	create team : Boolean
+	createTeam() : Boolean
 		attemps to create team
-	join team(Character player) : Boolean
+	joinTeam(Character player) : Boolean
 		attempts to join team of [player]
-	leave team : Boolean
+	leaveTeam() : Boolean
 		attempts to leave team
 		this === this.team.creator -> has to pass leadership to someone (regardless of team type)
 	changeTeamType(Boolean type) : Boolean
@@ -196,7 +196,7 @@ Functions:
 	// ---------
 	// LOCATION
 	// ---------
-	enter location(Number locationID) : Boolean	
+	enterLocation(Number locationID) : Boolean	
 		attempts to enter location with given [locationID]
 		stops listening to current location (leave)
 	
@@ -213,8 +213,8 @@ Guild(Object config)
 	id : Number
 	name : String
 	creator : Number
-	members : Object[] { id: Number, status: Boolean }
-	ranks : Object // list of possible ranks
+	members : Object[] -> { id: Number, status: Boolean }
+	ranks : Object -> { id: Number, rank: String } // list of possible ranks
 	membersRanks : Object // maps members -> their ranks
 	invitations : Object
 	invitationsCount : Number
@@ -222,9 +222,9 @@ Guild(Object config)
 
 Functions:
 	invite(Character allegedCreator, Character player) : Boolean
-	sendInvitation(Characterp player) : Boolean (always true) === Team.prototype.sendInvitation
-	acceptInvitation(Number number) : Boolean (always true) === Team.prototype.acceptInvitation
-	refuseInvitation(Number number) : Boolean (always true) === Team.prototype.refusetInvitation
+	sendInvitation(Characterp player) :  === Team.prototype.sendInvitation
+	acceptInvitation(Number number) :  === Team.prototype.acceptInvitation
+	refuseInvitation(Number number) :  === Team.prototype.refusetInvitation
 	leave(Character player) : Boolean
 		attempts to let the [player] leave
 	

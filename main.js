@@ -26,6 +26,12 @@
 // -----------------
 // ALIASES
 // -----------------
+(function (){
+WebSocket.prototype.sendJSON = function(data){
+	this.send(JSON.stringify(data));
+};
+
+
 const doc = document;
 doc.get = doc.getElementById;
 
@@ -46,8 +52,16 @@ const user = new User();
 
 
 const websocket = new WebSocket('ws://127.0.0.1:8080');
-WebSocket.prototype.sendJSON = function(data){
-	websocket.send(JSON.stringify(data));
+websocket.onopen = function(){
+	console.log('Websocket is open.');
+};
+websocket.onmessage = function(object){
+	const data = JSON.parse(object.data);
+	user.addMessage(data.message);
+	// User[data.event](data);
+};
+websocket.onclose = function() {
+	window.location.href = window.location.href;
 };
 
 doc.get('connect').addEventListener('click', function() {
@@ -69,17 +83,10 @@ doc.get('connect').addEventListener('click', function() {
 		}
 	});
 });
-websocket.onmessage = function(object){
-	const data = JSON.parse(object.data);
-	user.addMessage(data.message);
-	// User[data.event](data);
-};
-websocket.onclose = function() {
-	window.location.href = window.location.href;
-};
 window.addEventListener('beforeunload', function(){
 	// websocket.sendJSON({ event: 'disconnect' });
 	// if(websocket.)
 	websocket.close();
 });
 
+}());

@@ -9,6 +9,11 @@ const Guild = require('./guild.js');
 const Location = require('./location.js');
 const Team = require('./team.js');
 
+// ------------------
+// CREATE GAME WORLD
+// ------------------
+const Init = require('./world_init.js');
+
 class World {
 	constructor() {
 		this.locationsCount = 0;
@@ -19,6 +24,8 @@ class World {
 		this.players = {};
 		this.teams = {};
 		this.guilds = {};
+
+		Init(this);
 	}
 	
 	// LOCATIONS
