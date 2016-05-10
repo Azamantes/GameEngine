@@ -24,15 +24,17 @@ const Team = class TEAM extends Channel {
 	}
 	invite(allegedCreator, player) { // player interface
 		if(player.team !== null) {
-			return !!console.warn('This player is in a team already.');
+			return Team.Error(this.errors.memberAlready);
 		}
 		if(this.type && this.creator !== allegedCreator) {
-			return !!console.warn('You are not the team leader and thus cannot invite people.');
+			return Team.Error(this.errors.invite);
 		}
 		if(~this.members.indexOf(player)) {
-			return !!console.warn(player.name + ' is in your team already.');
+			return Team.Error(this.errors.memberAlready);
+			// return !!console.warn(player.name + ' is in your team already.');
 		}
-		return this.sendInvitation(player);
+		this.sendInvitation(player);
+		return true;
 	}
 	sendInvitation(player) {
 		const number = ++this.invitationCount;
@@ -43,7 +45,6 @@ const Team = class TEAM extends Channel {
 			accept: this.listeners.accept,
 			refuse: this.listeners.refuse,
 		});
-		return true;
 	}
 	generateInvitation() {
 		return 'You have received team invitation from ' + this.creator.name + '.\nDo you accept it?';
@@ -53,58 +54,56 @@ const Team = class TEAM extends Channel {
 		this.addMember(player);
 		console.log(player.name + ' joined.');
 		this.invitations[number] = null;
-		return true;
 	}
 	refuseInvitation(number) { // player interface
 		const player = this.invitations[number];
 		console.log(player.name + ' refused invitation.');
 		this.invitations[number] = null;
-		return true;
 	}
 	join(player) { // player interface
 		if(this.type){
-			return !!console.warn('You cannot join Leadership without invitation.');
+			return Team.Error(this.errors.join);
 		}
-		return this.addMember(player);
+		this.addMember(player);
+		return true;
 	}
 	leave(player) {
 		if(this.members.length === 1) {
 			return !!this.removeMember(player);
 		}
 		if(this.type && this.creator === player){
-			return !!console.warn(`You cannot leave your people without telling them who's going to be the leader now.`);
+			return Team.Error(this.errors.leaveLeader);
 		} else if(this.type && this.creator !== player) {
-			return !!console.warn('You cannot leave Leadership on your own.');
+			return Team.Error(this.errors.leave);
 		}
 		return !!this.removeMember(player);
 	}
 	kick(allegedCreator, player) { // player interface
 		if(!this.type || this.creator !== allegedCreator) {
-			return !!console.warn('You cannot kick out players from this team.');
+			return Team.Error(this.errors.kick);
 		}
-		return this.removeMember(player);
+		this.removeMember(player);
+		return true;
 	}
 	addMember(player, listeners) {
 		this.members.push(player);
 		player.team = this;
 		this.shout('chat', this.name + player.name + ' joined.');
-		return true;
 	}
 	removeMember(player) {
 		this.members.splice(this.members.indexOf(player), 1);
 		player.team = null;
 		this.shout('chat', this.name + player.name + ' left.');
-		return true;
 	}
 	passLeadership(allegedCreator, player) {
 		if(this.creator !== allegedCreator) {
-			return !!console.warn('You are not the team leader.');
+			return Team.Error(this.errors.leader);
 		}
 		if(~this.members.indexOf(player)) {
-			return !!console.warn('This player is not in your team.');
+			return Team.Error(this.errors.inTeam);
 		}
 		if(this.creator !== allegedCreator && !this.type) {
-			return !!console.warn('You cannot pass leadership in an Anarchy Team.');
+			return Team.Error(this.errors.anarchyLeadership);
 		}
 		this.creator = player;
 		this.shout('leader changed', 'Team become Leadership. New leader: ' + player.name);
@@ -112,7 +111,7 @@ const Team = class TEAM extends Channel {
 	}
 	changeType(player, type) {
 		if(this.creator !== player) {
-			return !!console.warn('You are no the team leader. You cannot change its type.');
+			return Team.Error(this.errors.creator);
 		}
 		if(this.type === !!type) {
 			return true;
@@ -122,8 +121,22 @@ const Team = class TEAM extends Channel {
 		this.shout('type changed', 'New team type: ' + (type? 'Leadership.' : 'Anarchy.'));
 		return true;
 	}
+	static Error(error) {
+		return !!console.log(new Error(this.prototype.errors[error]));
+	}
 };
-Team.prototype.texts = {
-	
+Team.prototype.errors = {
+	inTeam: 'This player is not in your team.',
+	leader: 'You are not the team leader.',
+	creator: 'You are not the team leader. You cannot change its type.',
+	member: 'You are not a member of this guild.',
+	memberAlready: 'This player is in a team already.',
+	invite: 'You are not the team leader and thus cannot invite people.',
+	join: 'You cannot join Leadership without invitation.',
+	kick: 'You cannot kick out players from this team.',
+	leave: 'You cannot leave Leadership on your own.',
+	leaveLeader: 'You cannot leave your people without telling them who\'s going to be the leader now.',
+	assign: 'You cannot assign rank to yourself.',
+	anarchyLeadership: 'You cannot pass leadership in an Anarchy Team.',
 };
 module.exports = Team;

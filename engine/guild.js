@@ -17,7 +17,7 @@ const Guild = class GUILD extends Channel { // extends Team
 		// here it must have only player IDs, because you cannot pre-create players
 		// too much trouble, just store their IDs you got from the database
 		this.members = config.members;
-		this.ranks = {};
+		this.ranks = {}; // number -> string
 		this.membersRanks = {};
 		this.invitationCount = 0;
 		this.invitations = {};
@@ -60,13 +60,11 @@ const Guild = class GUILD extends Channel { // extends Team
 		this.members.push(player);
 		player.guild = this;
 		this.shout('chat', this.name + player.name + ' joined.');
-		return true;
 	}
 	removeMember(player, kicked = false) {
 		this.members.splice(this.members.indexOf(player), 1);
 		player.guild = null;
 		this.shout('chat', this.name + player.name + kicked? ' was kicked away.' : ' left.');
-		return true;
 	}
 
 	// Unique to Guild
@@ -77,10 +75,16 @@ const Guild = class GUILD extends Channel { // extends Team
 
 		const isMember = !!this.members[player.id];
 		if(!isMember) {
-			return !!console.warn(new Error(player.name + ' is not a member of this guild.'));
+			return Guild.Error(player.name + ' is not a member of this guild.');
 		}
 
+		const rankExists = !!this.ranks[rank];
+		if(!rankExists) {
+			return Guild.Error(this.errors.rank);
+		}
 
+		this.membersRanks[player.id] = rank;
+		this.shout('chat', player.name = ' was assigned rank [' + this.ranks[rank] + '].');
 	}
 	donate(player, money = 0) {
 		const isMember = !!this.members[player.id];
@@ -91,10 +95,8 @@ const Guild = class GUILD extends Channel { // extends Team
 		this.money += money;
 		this.shout('log', player.name + ' donated ' + money + ' money.');
 	}
-	static Error(error) {
-		return !!console.log(new Error(this.prototype.errors[error]));
-	}
 };
+Guild.Error = Team.Error;
 Guild.prototype.sendInvitation = Team.prototype.sendInvitation;
 Guild.prototype.acceptInvitation = Team.prototype.acceptInvitation;
 Guild.prototype.refuseInvitation = Team.prototype.refuseInvitation;
@@ -105,6 +107,7 @@ Guild.prototype.errors = {
 	kick: 'You cannot kick out players from this guild.',
 	leave: `You cannot leave your own guild.`,
 	assign: 'You cannot assign rank to yourself.',
+	rank: `This guild doesn't have such rank.`,
 };
 
 module.exports = Guild;

@@ -134,18 +134,17 @@ class Character {
 		if(this.team === null){
 			return !!console.warn('You are not in a team.');
 		}
-		return this.team.kick(this, player);
+		this.team.kick(this, player);
+		return true;
 	}
 	receiveInvitation(invitation) { // this is going to send invitation via websocket
 		this.invitations.push(invitation);
 		this.invite(invitation); // send via websocket
-		return true;
 	}
 	invite(invitation) { // this is going to be called on the client side and return acceptance or refusal
 		const decision = !!window.confirm(invitation.message); //show prompt on the client side
 		if(decision) invitation.accept(invitation.number);
 		else invitation.refuse(invitation.number);
-		return true;
 	}
 
 	// ---------- 

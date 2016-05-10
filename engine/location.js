@@ -42,7 +42,6 @@ const Location = class LOCATION extends Channel {
 	}
 	kick(player) { // no checking, just kick him out (called from inside Game object)
 		this.players[player.id] = null;
-		return true;
 	}
 };
 
