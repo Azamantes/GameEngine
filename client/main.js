@@ -26,7 +26,7 @@
 // -----------------
 // ALIASES
 // -----------------
-(function (){
+// (function (){
 WebSocket.prototype.sendJSON = function(data){
 	this.send(JSON.stringify(data));
 };
@@ -44,6 +44,9 @@ class User {
 		element.textContent = value;
 		this.messageCenter.appendChild(element);
 	}
+	inventory(data) {
+		console.log(data);
+	}
 };
 User.prototype.messageCenter = doc.get('messages');
 const user = new User();
@@ -58,7 +61,8 @@ websocket.onopen = function(){
 websocket.onmessage = function(object){
 	const data = JSON.parse(object.data);
 	user.addMessage(data.message);
-	// User[data.event](data);
+	console.log(data);
+	User[data.event] && User[data.event](data);
 };
 websocket.onclose = function() {
 	window.location.href = window.location.href;
@@ -68,6 +72,7 @@ doc.get('connect').addEventListener('click', function() {
 	const id = doc.get('playerID').value;
 	const name = doc.get('playerName').value;
 	const location = doc.get('playerLocation').value;
+	
 	if(!id) return addMessage('ID is invalid.');
 	if(!name) return addMessage('Name is invalid.');
 	if(!location) return addMessage('Location is invalid.');
@@ -89,4 +94,4 @@ window.addEventListener('beforeunload', function(){
 	websocket.close();
 });
 
-}());
+// }());

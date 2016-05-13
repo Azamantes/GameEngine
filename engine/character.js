@@ -4,6 +4,9 @@
 // Dependencies
 // --------------
 const Channel = require('./channel.js');
+const Inventory = require('./inventory.js');
+const ThrowError = require('./team.js').Error;
+
 
 class Character {
 	constructor(config = {}) {
@@ -13,7 +16,10 @@ class Character {
 		this.name = config.name;
 		this.alignment = 0;
 		
-		this.inventory = null; // new Inventory()
+		this.inventory = new Inventory({
+			owner: this,
+		});
+		console.log('jest nowe inventory', this.inventory);
 		this.equipment = null; // new Equipment()
 		this.skillbook = null; // new Skillbook()
 		this.talentTree = null; // new TalentTree()
@@ -98,7 +104,7 @@ class Character {
 	}
 	joinTeam(player) {
 		if(player.team === null){
-			return !!console.warn('There is no team to join.');
+			return ThrowError('There is no team to join.');
 		}
 		const joined = player.team.join(this);
 		if(!joined) return false;
@@ -107,7 +113,7 @@ class Character {
 	}
 	leaveTeam() {
 		if(this.team === null){
-			return !!console.warn('You are not in a team.');
+			return ThrowError('You are not in a team.');
 		}
 		const team = this.team;
 		const left = team.leave(this);
@@ -120,7 +126,7 @@ class Character {
 	}
 	changeTeamType(type) {
 		if(this.team === null) {
-			return !!console.warn('You are not in a team.');
+			return ThrowError('You are not in a team.');
 		}
 		return this.team.changeType(this, type);
 	}
@@ -132,7 +138,7 @@ class Character {
 	}
 	kickOutFromTeam(player) {
 		if(this.team === null){
-			return !!console.warn('You are not in a team.');
+			return ThrowError('You are not in a team.');
 		}
 		this.team.kick(this, player);
 		return true;
@@ -160,7 +166,7 @@ class Character {
 	enterLocation(id) {
 		const location = this.world.getLocation(id);
 		if(location === null) {
-			return !!console.warn('There is no such location.');
+			return ThrowError('There is no such location.');
 		}
 		
 		const allowed = location.enter(this);
@@ -178,7 +184,7 @@ class Character {
 				const channel = config.channel;
 				const isChannel = channel instanceof Channel;
 				if(!isChannel) {
-					return !!console.warn('Given channel is not valid.');
+					return ThrowError('Given channel is not valid.');
 				}
 				
 				while(++i < length) {
@@ -192,7 +198,7 @@ class Character {
 				const channel_2 = config.channel_2;
 				const areChannels = channel_1 instanceof Channel && channel_2 instanceof Channel;
 				if(!areChannels) {
-					return !!console.warn('Given channels are not valid.');
+					return ThrowError('Given channels are not valid.');
 				}
 				while(++i < length) {
 					box = array[i];
@@ -205,7 +211,7 @@ class Character {
 				const channel = config.channel;
 				const isChannel = channel instanceof Channel;
 				if(!isChannel) {
-					return !!console.warn('Given channel is not valid.');
+					return ThrowError('Given channel is not valid.');
 				}
 				
 				while(++i < length) {
@@ -229,13 +235,13 @@ class Character {
 	}
 	inviteToGuild(player) {
 		if(this.guild === null) {
-			return !!console.warn('You are no in a guild.');
+			return ThrowError('You are no in a guild.');
 		}
 		this.guild.invite(this, player);
 	}
 	leaveGuild() {
 		if(this.guild === null){
-			return !!console.warn('You are not in a guild.');
+			return ThrowError('You are not in a guild.');
 		}
 		const guild = this.team;
 		const left = guild.leave(this);

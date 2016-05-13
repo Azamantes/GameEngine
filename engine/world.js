@@ -6,6 +6,8 @@
 const Channel = require('./channel.js');
 const Character = require('./character.js');
 const Guild = require('./guild.js');
+const Inventory = require('./inventory.js');
+const Item = require('./items/item.js');
 const Location = require('./location.js');
 const Team = require('./team.js');
 
@@ -19,11 +21,13 @@ class World {
 		this.locationsCount = 0;
 		this.teamsCount = 0;
 		this.guildsCount = 0;
+		this.itemsCount = 0;
 
 		this.locations = {};
 		this.players = {};
 		this.teams = {};
 		this.guilds = {};
+		this.items = {};
 
 		Init(this);
 	}
@@ -96,6 +100,12 @@ class World {
 	}
 	getGuild(id) {
 		return this.guilds[id] || null;
+	}
+
+	// ITEMS
+	createItem(config) {
+		config.id = ++this.itemsCount; // 2 ^ 64 is a huge number, no need to worry about that.
+		return this.items[config.id] = new Item(config);
 	}
 };
 module.exports = World;

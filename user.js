@@ -38,8 +38,19 @@ class User {
 	execute(object) {
 		const data = JSON.parse(object);
 		const event = data.event;
-		console.log('nowe polaczenie?', object);
-		this.events.has(event) && this[event](data);
+		if(!this.events.has(event)) { // not listed in the User.prototype.events
+			console.warn(event, 'not listed in the User.prototype.events.');
+			return false;
+		}
+		if(this[event]) {
+			this[event](data);
+			return true;
+		}
+		if(this.player[event]) {
+			this.player[event](data);
+			return true;
+		}
+		return false;
 	}
 	unicast(data) { // void
 		if(!Check.this(data) === Check.object){
@@ -76,14 +87,50 @@ class User {
 		this.socket.terminate();
 		// try { this.socket.terminate(); } catch(error) {}
 	}
+
+	// ----------------
+	// USER INTERFACE
+	// ----------------
 	showMyCharacter() {
 		console.log(this.player);
 	}
+	getInventory() {
+		if(this.player === null) {
+			return;
+		}
+		console.log('ok');
+		this.unicast({
+			event: 'inventory',
+			data: this.player.inventory,
+		});
+	}
+	showInventory() {
+		if(this.player === null) {
+			console.log('sorry');
+			return;
+		}
+		this.player.inventory.show();
+	}
+	createItem(config = {}) {
+		const created = this.player.inventory.put(Game.createItem({}));
+		if(!created) {
+			console.warn('[' + this.player.id + ']: Could not create item.');
+		}
+	}
 };
 User.prototype.events = new Set([
+	// to allow only certain actions. You may want to keep some methods unaccesible from outside
 	'connect',
 	'disconnect',
-	'showMyCharacter'
+	'showMyCharacter',
+	'createItem',
+	'getInventory',
+	'showInventory',
 ]);
 User.prototype.Game = null;
 module.exports = { User, Init };
+
+// if you want to add some functionality you have to do the following:
+// - create method in the appropriate class
+// - add method to User class to expand player's interface
+// - add event to User.prototype.events, so that it's not ignored
