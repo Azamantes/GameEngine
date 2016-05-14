@@ -45,7 +45,21 @@ class User {
 		this.messageCenter.appendChild(element);
 	}
 	inventory(data) {
-		console.log(data);
+		let slotNumber, item;
+		const inventory = doc.get('inventory');
+		const object = data.data;
+
+		Object.keys(object).map(itemID => {
+			slotNumber = object[itemID].nr;
+			console.log(slotNumber);
+			item = doc.createElement('img');
+			item.src = './' + object[itemID].img;
+			item.id = 'item#' + itemID;
+			inventory.children[~~(itemID / 10)] // get row
+				.children[itemID % 10 - 1] // get table cell in that row
+				.appendChild(item); // put item in it
+		});
+
 	}
 };
 User.prototype.messageCenter = doc.get('messages');
@@ -57,41 +71,34 @@ const user = new User();
 const websocket = new WebSocket('ws://127.0.0.1:8080');
 websocket.onopen = function(){
 	console.log('Websocket is open.');
+	websocket.sendJSON({
+		event: 'connect',
+		config: {
+			user: USER_ID,
+			character: CHARACTER_ID,
+		}
+	});
 };
 websocket.onmessage = function(object){
 	const data = JSON.parse(object.data);
 	user.addMessage(data.message);
-	console.log(data);
-	User[data.event] && User[data.event](data);
+	// console.log(data.event);
+	// if(data.event === 'inventory') {
+	// 	console.log(!!user);
+	// }
+	user[data.event] && user[data.event](data);
 };
 websocket.onclose = function() {
 	window.location.href = window.location.href;
 };
 
-doc.get('connect').addEventListener('click', function() {
-	const id = doc.get('playerID').value;
-	const name = doc.get('playerName').value;
-	const location = doc.get('playerLocation').value;
-	
-	if(!id) return addMessage('ID is invalid.');
-	if(!name) return addMessage('Name is invalid.');
-	if(!location) return addMessage('Location is invalid.');
 
-	websocket.sendJSON({
-		event: 'connect',
-		config: {
-			id,
-			name,
-			location,
-			guild: null,
-			team: null
-		}
-	});
-});
+
 window.addEventListener('beforeunload', function(){
-	// websocket.sendJSON({ event: 'disconnect' });
-	// if(websocket.)
 	websocket.close();
 });
-
+doc.get('logout').addEventListener('click', function(event) {
+	event.preventDefault();
+	window.location.href = 'logout.php';
+});
 // }());

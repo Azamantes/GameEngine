@@ -1,0 +1,95 @@
+#help,
+.topbar-language,
+#logout {
+	float: right;
+	width: 10%;
+	height: 100%;
+}
+#settings {
+	float: left;
+	width: 10%;
+	height: 100%;
+	/*color: lightgrey;*/
+}
+#topbar-container {
+	cursor: default;
+	top: 1%;
+	right: 1%;
+	width: 23%;
+	height: 50px;
+	border-top-left-radius: 25px;
+	border-top-right-radius: 25px;
+}
+#topbar {
+	border-top-left-radius: 25px;
+	border-top-right-radius: 25px;
+}
+#topbar > div {
+	width: 50%;
+	height: 50px;
+	font-size:25px;
+	line-height: 50px;
+	text-align: center;
+}
+#topbar > div:hover {
+	cursor: pointer;
+	box-shadow: inset 0px 0px 10px #888888;
+}
+#topbar > :last-child {
+	border-top-left-radius: 25px;
+}
+#topbar > :first-child {
+	border-top-right-radius: 25px;
+}
+#main-container {
+	top: 1%;
+	left: 11%;
+	right: 25%;
+	bottom: 1%;
+	padding: 15px;
+}
+#main {
+	-moz-user-select: none;
+	overflow-y: scroll;
+	cursor: default;
+}
+#menu-container {
+	top: 1%;
+	left: 1%;
+	width: 9%;
+}
+#right-1-container {
+	top: 11%;
+	right: 1%;
+	width: 23%;
+}
+#right-1-container > :last-child {
+	margin-bottom: 15px;
+}
+#topbar-container,
+#topbar-left-container,
+#topbar-right-container,
+#main-container,
+#menu-container,
+#right-1-container {
+	position: absolute;
+	box-shadow: 0px 0px 10px #888888;
+}
+#topbar-left-container ul {
+	visibility: hidden;
+}
+#topbar-left-container:hover ul {
+	visibility: visible;
+}
+#translation_add_from, #translation_add_to {
+	width: 90%;
+	margin-left: 4.5%;
+}
+#translation_find {
+	flex: 1;
+	width: 90%;
+	margin-left: 4.5%;
+}
+#text_reading_title {
+	text-align: center;
+}

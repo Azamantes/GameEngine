@@ -1,0 +1,194 @@
+.shadow {
+	box-shadow: inset 0px 0px 9px #888888;
+}
+$radius: 25px;
+.bradius-top {
+	border-top-left-radius: $radius;
+	border-top-right-radius: $radius;
+}
+.bradius-bottom {
+	border-bottom-left-radius: $radius;
+	border-bottom-right-radius: $radius;
+}
+@mixin menuitem($height) {
+	cursor: pointer;
+	display: block;
+	text-align: center;
+	margin: 0px 0px;
+	height: $height;
+	line-height: $height;
+}
+/*
+	Main
+*/
+
+.relative {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+.menu {
+	cursor: default;
+}
+.menuitem {
+	@include menuitem(50px);
+}
+.menuitem:hover {
+	@extend .shadow;
+}
+.menuitem:hover:first-child {
+	@extend .bradius-top
+}
+.menuitem:hover:last-child {
+	@extend .bradius-bottom
+}
+.title {
+	display: flex;
+	height: 100%;
+    align-items: center;
+}
+.title span {
+	flex: 1;
+}
+.dropdown {
+	position: absolute;
+	top: 50px;
+	width: inherit;
+	visibility: hidden;
+	z-index: 5;
+	background-color: white;
+	@extend .shadow;
+	@extend .bradius-bottom;
+}
+.dropdown p {
+	@include menuitem(25px);
+	font-size: 14px;
+}
+.dropdown p:last-child {
+	@extend .bradius-bottom;
+}
+.dropdown p:hover {
+	background: #0000FE;
+	@extend .shadow;
+}
+.dropdown :first-child {
+	@extend .bradius-top;
+}
+.topbar-language:hover > div {
+	visibility: visible;
+}
+.float-left {
+	float: left;
+}
+.float-right {
+	float: right;
+}
+
+#help, #logout, #settings .topbar-language {
+	width: 10%;
+	height: 100%;
+}
+#help, #logout, .topbar-language {
+	float: left;
+}
+#settings { float: right }
+#topbar-container {
+	cursor: default;
+	top: 1%;
+	right: 1%;
+	width: 23%;
+	height: 50px;
+	@extend .bradius-top;
+}
+#topbar {
+	@extend .bradius-top;
+}
+#topbar > div {
+	width: 50%;
+	height: 50px;
+	font-size:25px;
+	line-height: 50px;
+	text-align: center;
+}
+#topbar > div:hover {
+	cursor: pointer;
+	@extend .shadow;
+}
+#topbar > :last-child {
+	border-top-left-radius: 25px;
+}
+#topbar > :first-child {
+	border-top-right-radius: 25px;
+}
+#main-container {
+	top: 1%;
+	left: 11%;
+	right: 25%;
+	bottom: 1%;
+	padding: 15px;
+}
+#main {
+	-moz-user-select: none;
+	overflow-y: scroll;
+	cursor: default;
+}
+#menu-container {
+	top: 1%;
+	left: 1%;
+	width: 9%;
+}
+#right-1-container {
+	top: 11%;
+	right: 1%;
+	width: 23%;
+}
+#right-1-container > :last-child {
+	margin-bottom: 15px;
+}
+#topbar-container,
+#topbar-left-container,
+#topbar-right-container,
+#main-container,
+#menu-container,
+#right-1-container {
+	position: absolute;
+	box-shadow: 0px 0px 10px #888888;
+}
+#topbar-left-container ul {
+	visibility: hidden;
+}
+#topbar-left-container:hover ul {
+	visibility: visible;
+}
+#translation_add_from, #translation_add_to, #translation_find {
+	width: 90%;
+	margin-left: 4.5%;
+}
+#translation_find {
+	flex: 1;
+}
+#text_reading_title {
+	text-align: center;
+}
+
+
+@keyframes fadeIn {
+	0% { 	opacity: 0 }
+	100% { 	opacity: 1; visibility: visible; }
+}
+@keyframes fadeOut {
+	0% { 	opacity: 1 }
+	100% { 	opacity: 0; visibility: hidden; }
+}
+.appear {
+	display: block;
+	animation: fadeIn 0.5s;
+}
+.disappear {
+	display: block;
+	animation: fadeOut 0.25s;
+	animation-fill-mode: forwards;
+}
+.hidden {
+	display: none;
+}

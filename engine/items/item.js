@@ -8,17 +8,17 @@
 class Item {
 	constructor(config = {}) {
 		this.id = config.id;
+		this.img = config.img;
 		this.name = config.name;
 		this.model = config.model;
 		this.type = config.type;
-		this.group = config.group;
-		this.quality = config.quality;
-		this.grade = config.grade;
-		this.weight = config.weight;
+		// this.quality = config.quality;
+		// this.grade = config.grade;
+		// this.weight = config.weight;
 		this.slot = config.slot;
-		this.effects = config.effects;
-		this.skills = config.skills;
-		this.flags = config.flags || Math.pow(2, 31) - 1;
+		// this.effects = config.effects;
+		// this.skills = config.skills;
+		// this.flags = config.flags || Math.pow(2, 31) - 1;
 			// 1. consumable // can you eat/use it? scrolls, food
 			// 2. destructible // can you destroy/disassemble it?
 			// 3. durable // 1 -> has durability, 0 -> no durability

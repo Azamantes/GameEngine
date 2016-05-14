@@ -95,8 +95,10 @@ const Guild = class GUILD extends Channel { // extends Team
 		this.money += money;
 		this.shout('log', player.name + ' donated ' + money + ' money.');
 	}
+	static Error(error) {
+		return !!console.log(new Error(Guild.prototype.errors[error]));
+	}
 };
-Guild.Error = Team.Error;
 Guild.prototype.sendInvitation = Team.prototype.sendInvitation;
 Guild.prototype.acceptInvitation = Team.prototype.acceptInvitation;
 Guild.prototype.refuseInvitation = Team.prototype.refuseInvitation;

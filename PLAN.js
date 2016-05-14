@@ -17,7 +17,7 @@ Functions:
 	
 	getLocation(Number id) : Location
 	
-	createPlayer(Object config) : Character
+	createPlayer(Object config) : void
 	
 	getPlayer(Number id) : Character
 	

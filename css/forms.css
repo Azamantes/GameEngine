@@ -1,0 +1,37 @@
+.form {
+	margin: 10% auto auto;
+	text-align: center;
+	padding: 10px;
+}
+.form-head, .form-body, .form-bottom, .form-body-left, .form-body-right {
+	margin: 10px 0px;
+}
+.form-body {
+	display: flex;
+}
+.form-body-left > span, .form-body-right input, .form-body-right > textarea, .form-body-right > select {
+	float: left;
+	clear: both;
+	margin: 0px 10px;
+}
+.form-body-right div {
+	margin: 0px;
+}
+.form-body-left {
+	flex: 0.15;
+}
+.form-body-right {
+	flex: 0.85;
+}
+.form-body-left span {
+	line-height: 23px;
+}
+.form-body-right input {
+	width: 150px;
+}
+.form-body-right textarea {
+	width: 500px;
+}
+.form-bottom {
+	text-align: right;
+}

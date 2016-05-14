@@ -16,9 +16,11 @@ class Character {
 		this.name = config.name;
 		this.alignment = 0;
 		
-		this.inventory = new Inventory({
-			owner: this,
-		});
+		config.inventory.owner = this;
+		this.inventory = config.inventory;
+			this.inventory.owner = this;
+
+		// this.inventory = new Inventory(config.inventory);
 		console.log('jest nowe inventory', this.inventory);
 		this.equipment = null; // new Equipment()
 		this.skillbook = null; // new Skillbook()

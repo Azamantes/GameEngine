@@ -1,0 +1,209 @@
+/* --------------
+	Fog and Popups
+ --------------- */
+#sky-container, #fog, #sky {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+}
+#sky {
+	display: flex;
+}
+#sky > div {
+	background-color: white;
+	box-shadow: 0px 0px 100px #FFFFFF;
+}
+#fog {
+	opacity: 0.9;
+	background-color: black;
+}
+
+/* --------------
+	Help
+ --------------- */
+#help_sky {
+	position: absolute;
+	top: 10%;
+	left: 25%;
+	right: 25%;
+	height: auto;
+	padding: 15px;
+	/*border-radius: 50px;*/
+}
+#logout_sky {
+	background: whitesmoke;
+	padding: 15px;
+	width: 30%;
+	/*border-radius: 50px;	*/
+}
+
+/* --------------
+	Text Browser
+ --------------- */
+.sky-title {
+	position: absolute;
+	top: 2%;
+	left: 35%;
+	right: 35%;
+	width: 30%;
+	line-height: 65px;
+	height: 65px;
+	/*border-radius: 25px;*/
+}
+.sky-main {
+	position: absolute;
+	top: 12%;
+	left: 18%;
+	right: 18%;
+	bottom: 5%;
+	/*border-radius: 30px;*/
+}
+.text_browser_info {
+	float: right;
+	margin-right: 10px;
+}
+.text-title {
+	height: 25px;
+	line-height: 25px;
+}
+.text-title:hover {
+	cursor: pointer;
+	box-shadow: inset 0px 0px 5px #888888;
+}
+.text-title > :first-child {
+	float: left;
+	margin-left: 5px;
+}
+.text-title > :last-child {
+	float: right;
+	margin-right: 5px;
+}
+
+/* --------------
+	Text Browser
+ --------------- */
+#text_browser_topbar {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	right: 10px;
+	height: 25px;
+	line-height: 25px;
+}
+#text_browser_topbar > *:not(input) {
+	margin-top: 0px;
+	height: 20px;
+	line-height: 20px;
+}
+#text_browser_topbar > button {
+	height: 23px;
+	line-height: 15px;
+}
+#text_browser_topbar > *:not(:last-child) {
+	margin-right: 5px;
+}
+#text_browser_topbar > input {
+	width: 300px;
+}
+#text_browser_topbar > :last-child {
+	float: right;
+}
+#text_browser_content {
+	/*pointer-events: none;*/
+	position: absolute;
+	top: 50px;
+	left: 5px;
+	right: 5px;
+	bottom: 5px;
+	border-bottom-left-radius: 30px;
+	border-bottom-right-radius: 30px;
+}
+
+#text_browser_browse {
+	float: right;
+	height: 30px;
+}
+
+/* --------------
+	Add new textr
+ --------------- */
+#text_add_title,
+#text_add_content,
+#text_add_source,
+#text_add_language {
+	position: absolute;
+	left: 2%;
+	right: 3%;
+}
+#text_add_title > input,
+#text_add_content > textarea,
+#text_add_source > input {
+	width: 90%;
+	float: right;
+}
+#text_add_content > textarea {
+	height: 100%;
+	resize: none;
+}
+#text_add_title {
+	top: 6%;
+}
+#text_add_content {
+	top: 10%;
+	bottom: 11%;
+}
+#text_add_source {
+	bottom: 6%;
+}
+#text_add_language {
+	top: 2%;
+}
+#text_add_language > select {
+	float: right;
+	width: 90.5%;
+}
+#text_add_submit {
+	position: absolute;
+	bottom: 2%;
+	right: 2.5%;
+	width: 100px;
+}
+#sky-confirm-container {
+	position: absolute;
+	top: 10%;
+	left: 30%;
+	right: 30%;
+	padding: 15px;
+	background: white;
+	box-shadow: 0px 0px 5px black;
+}
+#sky-confirm-container button {
+	float: right;
+}
+
+/* --------------
+	Settings
+ --------------- */
+ #settings_sky {
+ 	padding: 10px;
+
+ 	position: absolute;
+ 	/*outline: 1px solid black;*/
+ 	top: 10%;
+ 	left: 25%;
+ 	right: 25%;
+ 	height: auto;
+
+ 	overflow-y: auto;
+ }
+#settings-password-container button {
+	border-radius: 0px;
+	float: right;
+}
+#settings-password-container input {
+	/*float: right;*/
+	width: 75%;
+	margin: 0px 20px;
+}

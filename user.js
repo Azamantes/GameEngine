@@ -16,6 +16,7 @@ function getNumber(string) {
 // --------------
 const Check = require('./engine/check.js');
 
+
 var Game = null;
 
 function Init(object) {
@@ -68,14 +69,11 @@ class User {
 			console.log('user.connect -> data is not an object.');
 		}
 
+		// very basic and primitive character init
+
+
 		data.config.connection = this;
-		this.player = Game.createPlayer(data.config);
-		if(this.player === null) { // refuse connection, player already exists.
-			console.log('rozlaczam');
-			return this.disconnect();
-		}
-		
-		this.connected = true;
+		Game.createPlayer(data.config, this.setPlayer.bind(this));
 	}
 	disconnect() {
 		if(this.player) {
@@ -91,6 +89,25 @@ class User {
 	// ----------------
 	// USER INTERFACE
 	// ----------------
+	setPlayer(myCharacter) {
+		if(myCharacter === null) {
+			console.log('Nie udalo sie stworzyc postaci. (null)');
+			this.disconnect();
+		}
+		this.player = myCharacter;
+		if(this.player === null) { // refuse connection, player already exists.
+			return this.disconnect();
+		}
+		
+		this.connected = true;
+		this.sendInitCharacterInformation();
+	}
+	sendInitCharacterInformation() {
+		this.unicast({
+			event: 'inventory',
+			data: this.player.inventory.slots
+		});
+	}
 	showMyCharacter() {
 		console.log(this.player);
 	}

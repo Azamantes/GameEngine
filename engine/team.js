@@ -122,7 +122,7 @@ const Team = class TEAM extends Channel {
 		return true;
 	}
 	static Error(error) {
-		return !!console.log(new Error(this.prototype.errors[error]));
+		return !!console.log(new Error(Team.prototype.errors[error]));
 	}
 };
 Team.prototype.errors = {
