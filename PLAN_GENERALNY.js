@@ -20,7 +20,3 @@ na razie ma byc zrobione:
 Game World object musi miec liste query zeby tworzyc itemy, zamieniac je miejscami etc
 no bo wszystko dzieje sie na serwerze, no ale trzeba aktualizowac stan gry
 najlepiej po kazdej czynnosci.
-
-
-
-Marcus Vicinius Gladiatorius

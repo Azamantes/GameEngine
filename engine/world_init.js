@@ -4,6 +4,7 @@
 function Init(Game) {
 	Game.createLocation({ name: 'Wioska' });
 	Game.createLocation({ name: 'Miasto' });
+	Game.connectDatabase();
 }
 
 

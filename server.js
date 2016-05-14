@@ -10,6 +10,7 @@ const WebsocketServer = require('ws').Server;
 const server = new WebsocketServer({
 	port: 8080
 });
+
 const database = require('mysql').createConnection({
 	host: '127.0.0.1',
 	user: 'root',
@@ -19,22 +20,13 @@ const database = require('mysql').createConnection({
 });
 database.connect();
 
-// database is in the world.js file since Game World is the only object doing queries.
-// const database = require('mysql').createConnection({
-// 	host: '127.0.0.1',
-// 	user: 'root',
-// 	password: '',
-// 	database: 'gameengine',
-// 	multipleStatements: true
-// });
-
 // ------------------
 // CREATE GAME WORLD
 // ------------------
 const World = require('./engine/world.js');
 const Setup = require('./user.js');
 const User = Setup.User;
-Setup.Init(new World(database));
+Setup.Init(new World(database)); // database is in the world.js file since Game World is the only object doing queries.
 
 
 // -------------------
