@@ -1,7 +1,4 @@
 PARE RZECZY MA DZIALAC:
-mam miec plan bazy danych, jak go juz raz zrobie to ma tak zostac, bede tylko rekordy dodawal i na nich pracowal
-zeby miec spokoj umyslu, ze baza danych jest zaprojektowana i ze nie musze sie nia juz wiecej martwic
-oczywiscie mowie o kolejnych czesciach bazy danych, kamienie milowe bede sobie stawial, calej bazy od razu nie zrobie.
 
 na razie ma byc zrobione:
 - rejestracja
