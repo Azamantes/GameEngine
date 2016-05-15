@@ -1,15 +1,15 @@
 <?php
-	session_start();
+	// session_start();
 
-	if(!isset($_SESSION['user'])){ // not logged in
-		header('Location: ../index.php');
-	}
-	if(!isset($_SESSION['character']) && !isset($_POST['character'])){
-		header('Location: ./account.php');
-	}
-	if(isset($_POST['character'])) {
-		$_SESSION['character'] = $_POST['character'];
-	}
+	// if(!isset($_SESSION['user'])){ // not logged in
+	// 	header('Location: ../index.php');
+	// }
+	// if(!isset($_SESSION['character']) && !isset($_POST['character'])){
+	// 	header('Location: ./account.php');
+	// }
+	// if(isset($_POST['character'])) {
+	// 	$_SESSION['character'] = $_POST['character'];
+	// }
 ?>
 <!DOCTYPE html>
 <html>
@@ -137,7 +137,7 @@
 
 <table border='1'>
 	<tbody id='inventory'>
-		<!-- <tr>
+		<tr>
 			<td class='inv-item'><img id='item#1' src='sword1.png' class='item'></td>
 			<td class='inv-item'><img id='item#2' src='sword2.png' class='item'></td>
 			<td class='inv-item'><img id='item#3' src='sword3.png' class='item'></td>
@@ -148,7 +148,7 @@
 			<td class='inv-item'></td>
 			<td class='inv-item'></td>
 			<td class='inv-item'></td>
-		</tr> -->
+		</tr>
 		<tr>
 			<td class='inv-item'></td>
 			<td class='inv-item'></td>

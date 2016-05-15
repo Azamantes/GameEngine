@@ -10,6 +10,7 @@
 	// PREPARE TO SHOW PAGE
 	$string = '';
 	$hasCharacters = false;
+	// $result = $mysqli -> query("SELECT * FROM myCharacters WHERE userID = {$_SESSION['user']};");
 	$result = $mysqli -> query("SELECT c.id AS charID, c.name AS charName FROM users_characters uc, characters c WHERE uc.user = {$_SESSION['user']} AND uc.character = c.id;");
 	if($result -> num_rows !== 0) {
 		// $result = $result -> fetch_assoc();

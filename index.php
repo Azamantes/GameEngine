@@ -1,7 +1,7 @@
 <?php
 	session_start();
 	if(isset($_SESSION['user'])){
-		header('Location: html/index.php');
+		header('Location: html/account.php');
 	}
 
 	include 'html/config.php';
