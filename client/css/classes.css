@@ -1,0 +1,16 @@
+.form {
+	width: 300px;
+}
+.form-element {
+	clear: both;
+}
+.form-element > span {
+	float: left;
+	clear: right;
+}
+.form-element > input {
+	float: right;
+}
+.invisible {
+	visibility: hidden;
+}

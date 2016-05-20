@@ -5,26 +5,35 @@
 // --------------
 const Channel = require('./channel.js');
 const Character = require('./character.js');
-const Guild = require('./guild.js');
+// const Guild = require('./guild.js');
+const Equipment = require('./equipment.js');
 const Inventory = require('./inventory.js');
 const Item = require('./items/item.js');
 const Location = require('./location.js');
-const Team = require('./team.js');
+// const Team = require('./team.js');
 
-
-// ------------------
-// CREATE GAME WORLD
-// ------------------
-const Init = require('./world_init.js');
+// ----------
+// DATABASE QUERIES
+// ----------
+const SQL = {
+	character: {
+		info: 'SELECT charName, charLocation FROM myCharacters WHERE userID = ? AND charID = ?;',
+		items: 'SELECT itemID, itemName, slotType, itemSlot, itemSlotString, itemImage FROM myItems WHERE charID = ?;',
+	},
+	location: {
+		players: 'SELECT `character` AS charID FROM locations_characters WHERE location = ?;',
+		list: 'SELECT id, name FROM locations ORDER BY id ASC;',
+	},
+	item: {
+		put: '',
+		move: '',
+		delete: '',
+	},
+};
 
 class World {
 	constructor(database) {
 		this.database = database;
-
-		this.locationsCount = 0;
-		this.teamsCount = 0;
-		this.guildsCount = 0;
-		// this.itemsCount = 0;
 
 		this.locations = {};
 		this.players = {};
@@ -32,62 +41,90 @@ class World {
 		this.guilds = {};
 		this.items = {};
 
-		Init(this);
+		this.createLocations();
 	}
+
+	// ----------
 	// LOCATIONS
-	createLocation(config) {
-		config.id = ++this.locationsCount;
-		return this.locations[config.id] = new Location(config);
+	// ----------
+	createLocation(locationID, locationName) {
+		const players = {};
+		this.database.query(SQL.location.players, [locationID])
+		.on('result', (row) => {
+			// players[parseInt(row.charID)] = true;
+		}).on('end', () => {
+			this.locations[~~locationID] = new Location({
+				players: players,
+				id: locationID,
+				name: locationName,
+			});
+		});
 	}
 	getLocation(id) {
 		return this.locations[id] || null;
 	}
-	
-	//PLAYERS
+	createLocations() {
+		this.database.query(SQL.location.list)
+		.on('result', (row) => {
+			this.createLocation(row.id, row.name);
+		});
+	}
+
+	// ----------
+	// PLAYERS
+	// ----------
 	createPlayer(config, callback) {
 		const userID = parseInt(config.user);
 		const characterID = parseInt(config.character);
-		console.log('Proba zalogowania sie jako user#' + userID + ', character#' + characterID);
+		console.log('User#' + userID + ' logged in as  character#' + characterID + '.');
 		
 		if(this.players[characterID]){
 			console.log('Player#' + config.id + ' already exists.'); // false
 			return null;
 		}	
 
-		let player = null;
 		config.id = characterID;
 		config.location = this.locations[1];
 
-		config.inventory = new Inventory();
+		const inventorySlots = {};
+		const equipmentSlots = {};
 
-		this.database.query('SELECT c.name FROM characters c, users_characters uc WHERE uc.user = ? AND c.id = uc.character AND c.id = ?;', [userID, characterID])
+		this.database.query(SQL.character.info, [userID, characterID])
 		.on('result', row => {
-			config.name = row.name;
-			this.database.query( // LOAD PLAYER'S INVENTORY
-				`SELECT ii.nr, it.id, it.name, it.img
-				FROM inventories_items ii, inventories inv, items it
-				WHERE ii.inventory = inv.id AND inv.character = ? AND ii.item = it.id
-				ORDER BY ii.nr ASC;`,
-				[characterID]
-			).on('result', row => {
-				console.log('Pobrano item#' + row.id);
-				config.inventory.put(parseInt(row.nr), new Item({
-					id: row.id,
-					name: row.name,
-					img: row.img,
-				}));
-				// config.inventory.
-				// items[row.id] = new Item({
-				// 	id: row.id,
-				// 	nr: row.r,
-				// 	name: row.name,
-				// 	img: row.img,
-				// });
-				// config.inventory.count += 1;
+			console.log(`GAME WORLD: wybrano nowy nick ${row.charName}`);
+			config.name = row.charName;
+			config.location = this.locations[row.charLocation];
+			console.log('To jest name:', row.charName);
+			console.log('To jest charID:', characterID);
+			this.database.query(SQL.character.items, [characterID])
+			.on('result', row => {
+				console.log('Jest nowy item postaci#' + characterID);
+				row.itemID = ~~row.itemID;
+				row.slotType = ~~row.slotType;
+				row.itemSlot = ~~row.itemSlot;
+				if(row.slotType === 1) { // inventory
+					console.log('slotType === 1', row.itemID);
+					inventorySlots[row.itemSlot] = new Item({
+						id: row.itemID,
+						name: row.itemName,
+						src: row.itemImage,
+					});
+				} else if(row.slotType === 2) { // equipment
+					console.log('slotType === 2', row.itemID);
+					equipmentSlots[row.itemSlotString] = new Item({
+						id: row.itemID,
+						name: row.itemName,
+						src: row.itemImage,
+					});
+				}
+			}).on('errur', error => {
+				console.log('Game.createPlayer [ERROR] ::', error.message);
 			}).on('end', () => {
-				// config.inventory.container = items;
-
-				callback(new Character(config));
+				const character = new Character(config);
+				character.inventory = new Inventory({ slots: inventorySlots });
+				character.equipment = new Equipment({ slots: equipmentSlots });
+				this.players[character.id] = character;
+				callback(character);
 			});
 		});
 	}
@@ -117,39 +154,6 @@ class World {
 		this.players[player.id] = null;
 		console.log('Player #' + player.id + ' left the game.');
 		return true;
-	}
-	
-	// TEAMS
-	createTeam(config) {
-		config.id = ++this.teamsCount; // 2 ^ 64 is a huge number, no need to worry about that.
-		return this.teams[config.id] = new Team(config);
-	}
-	destroyTeam(team) {
-		this.teams[team.id] = undefined;
-		return true;
-	}
-	
-	// GUILDS
-	createGuild(config) { // this needs to be fed with data from the database during server boot
-		config.id = ++this.guildsCount;
-		return this.guilds[config.id] = new Guild(config);
-	}
-	getGuild(id) {
-		return this.guilds[id] || null;
-	}
-
-	// ITEMS
-	createItem(config) {
-		// config.id = ++this.itemsCount; // 2 ^ 64 is a huge number, no need to worry about that.
-		return this.items[config.id] = new Item(config);
-	}
-	puItemIntoInventory(player, item) {
-
-		this.database.query('INSERT INTO ');
-	}
-	// ---------------------
-	// DATABASE QUERIES
-	// ---------------------
-
+	}	
 };
 module.exports = World;

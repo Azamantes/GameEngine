@@ -10,7 +10,7 @@ const Location = class LOCATION extends Channel {
 	constructor(config = {}) {
 		super(config);
 		this.id = config.id;
-		this.players = {};
+		this.players = config.players;
 	}
 	enter(player) {
 		const isPlayer = player instanceof Character;
@@ -22,6 +22,8 @@ const Location = class LOCATION extends Channel {
 		if(isHereAlready) {
 			return !!console.warn('This player is already in this location.');
 		}
+
+		console.log('Nowy gracz:', player);
 
 		this.shout('chat', 'New player: ' + player.name);
 		return this.players[player.id] = true;

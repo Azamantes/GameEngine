@@ -1,0 +1,25 @@
+#logout {
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+}
+#character {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+}
+#table-equipment {
+	float: right;
+}
+#chat {
+	position: absolute;
+	padding: 5px;
+	background: lightgrey;
+	outline: 1px solid darkgrey;
+	height: 30%;
+	left: 25%;
+	right: 25%;
+	bottom: 10px;
+	overflow-y: auto;
+	font-size: 13px;
+}

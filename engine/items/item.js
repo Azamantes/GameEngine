@@ -10,6 +10,7 @@ class Item {
 		this.id = config.id;
 		this.img = config.img;
 		this.name = config.name;
+		this.src = config.src;
 		this.model = config.model;
 		this.type = config.type;
 		// this.quality = config.quality;

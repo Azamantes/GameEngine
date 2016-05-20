@@ -10,9 +10,9 @@ class Inventory {
 		this.owner = config.owner || null; // to check if you can even carry that much weight
 		// this.capacity = config.capacity || 100;
 		// this.count = config.count || 0;
-		this.slots = config.slots || {}; // which slots are occupied. // 1 - 100, not 0 - 99
+		this.slots = config.slots; // which slots are occupied. // 1 - 100, not 0 - 99
 		// this.container = config.container || {}; // maps item.id -> item
-		console.log('To sa itemy:', this.slots);
+		// console.log('To sa itemy:', this.slots);
 	}
 
 	put(slot, item) { // puts [item] in the given [slot]
@@ -25,5 +25,11 @@ class Inventory {
 		this.slots[slot] = item;
 		// this.container[item.id] = item;
 	}
-};
+	// show() {
+	// 	const 
+	// 	Object.keys(this.slots).map(slot => {
+
+	// 	});
+	// }
+}
 module.exports = Inventory;

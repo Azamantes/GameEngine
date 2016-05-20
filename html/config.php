@@ -49,11 +49,10 @@ function login($mysqli) {
 			return 'This user is already logged in.';
 		}
 
-		$_SESSION['user'] = $row['id'];
+		$_SESSION['userID'] = $row['id'];
 		$_SESSION['login'] = $row['login'];
-		$_SESSION['userGroup'] = $row['userGroup'];
-		if($_SESSION['user'] !== ''){
-			$mysqli -> query("UPDATE users SET status = 1 WHERE id = '{$_SESSION['user']}';");
+		if($_SESSION['userID'] !== ''){
+			$mysqli -> query("UPDATE users SET status = 1 WHERE id = '{$_SESSION['userID']}';");
 			$mysqli -> close();
 			header("Location: ./html/account.php");
 		}	

@@ -103,10 +103,17 @@ class User {
 		this.sendInitCharacterInformation();
 	}
 	sendInitCharacterInformation() {
+		// console.log('wysle equipment:', thisequipment);
+		this.unicast({
+			event: 'equipment',
+			data: this.player.equipment.slots
+		});
+		// console.log('wysle inventory:', inventory);
 		this.unicast({
 			event: 'inventory',
 			data: this.player.inventory.slots
 		});
+		
 	}
 	showMyCharacter() {
 		console.log(this.player);

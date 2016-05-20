@@ -1,0 +1,29 @@
+body {
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	/*position: relative;*/
+}
+table {
+	outline: 1px solid grey;
+	background: lightgrey;
+	padding: 0px;
+	clear: both;
+}
+tbody#inventory td {
+	
+}
+td {
+	float: left;
+	display: block;
+	width: 32px;
+	height: 32px;
+	padding: 0px;
+	margin-left: 2px;
+	background: white;
+}
+td:first-child {
+	margin-left: 0px;
+}

@@ -1,0 +1,39 @@
+Plan jest nastepujacy:
+potrzebuje bazy danych,
+potrzebuje silnika dzialajacego sobie na serwerze,
+potrzebuje interfejsu dzialajacego w przegladarce.
+
+
+tyle.
+
+
+Baza danych :: MySQL Workbench
+Silnik w Node.js : {
+	swiat gry : {
+		tworzenie, zmiana, usuwanie : {
+			srodowisko : {
+				lokacje
+				itemy
+			}
+			postacie : {
+				atrybuty
+				kontenery na itemy
+			}
+		}
+	}
+	gracze : {
+		laczenie sie
+		korzystanie z interfejsu : {
+			zarzadzanie itemami
+		}
+		rozlaczanie sie
+	}
+}
+Interface gracza w przegladarce : {
+	chat (wszelkie powiadomienia ze swiata gry, czat, ile expa dostalismy za moba etc.)
+	interface postaci: {
+		staty
+		EQ
+		inventory 
+	}
+}
