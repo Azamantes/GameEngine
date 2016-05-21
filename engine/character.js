@@ -279,5 +279,24 @@ class Character {
 			message: message
 		});
 	}
+
+	// ----------
+	// CONTAINER ITEM MANAGEMENT
+	// ----------
+	manageContainerDragDrop(slotFrom, slotTo) {
+
+		// inv inv ->
+
+		// inv eq ->
+			
+		// eq eq ->
+			
+		// eq inv ->
+			
+
+		// if(/inv\-item#[0-9]/.test(slotFrom)) {
+		// 	slotFrom = slotFrom.replace(/[^0-9]/g, '');
+		// } else if(//)
+	}
 };
 module.exports = Character;

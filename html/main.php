@@ -25,6 +25,7 @@
 	<div id='chat'></div>
 	<div id='character'>
 		<table id='table-equipment' border='1'></table>
+		<hr>
 		<table id='table-inventory' border='1'></table>	
 	</div>
 	
@@ -39,7 +40,6 @@
 	<script src='/Libraries/Mithril.js/mithril.min.js'></script>
 
 	<script src="../client/js/drag.js"></script>
-	<script src="../client/js/websocket.js"></script>
 	<script src="../client/js/player.js"></script>
 
 	<script src="../client/js/channel.js"></script>

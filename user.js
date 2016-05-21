@@ -141,6 +141,34 @@ class User {
 			console.warn('[' + this.player.id + ']: Could not create item.');
 		}
 	}
+	inventoryMoveItem(config) {
+		console.log(config);
+		
+		// jakie sa mozliwosci:
+		// - inv :: inv
+		// - inv :: eq
+		// - eq :: eq
+		// - eq :: inv
+		Game.switchPlayerContainerSlots(this.player, config, (function() {
+
+		}).bind(this));
+
+		// const switched = this.inventory.switch(slotFrom, slotTo);
+		// if(!switched) {
+
+		// }
+		// this.unicast({
+		// 	event: ''
+		// });
+	}
+	containerDragDrop(config) {
+		const slotFrom = config.from;
+		const slotTo = config.to;
+
+		console.log('dragdrop:', slotFrom, slotTo);
+
+		this.player.manageContainerDragDrop(slotFrom, slotTo);
+	}
 };
 User.prototype.events = new Set([
 	// to allow only certain actions. You may want to keep some methods unaccesible from outside
@@ -150,6 +178,8 @@ User.prototype.events = new Set([
 	'createItem',
 	'getInventory',
 	'showInventory',
+	'inventoryMoveItem',
+	'containerDragDrop',
 ]);
 User.prototype.Game = null;
 module.exports = { User, Init };

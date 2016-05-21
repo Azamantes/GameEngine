@@ -1,12 +1,12 @@
 class Player {
 	constructor(config) {
 		this.name = config.name;
-
 		// // --------------------
 		// // WEBSOCKET
 		// // --------------------
 		this.chatNode = config.chatNode;
 		this.websocket = new WebSocket('ws://192.168.97.100:8080');
+		this.dragger = new DragDrop(this.websocket);
 		this.websocket.sendJSON = function(data){
 			this.send(JSON.stringify(data));
 		};
@@ -18,6 +18,8 @@ class Player {
 		this.equipment = new Equipment(config.equipment);
 		// this.equipment = null; // new Equipment(config.equipment);
 		
+		// this.dragger = new DragDrop();
+
 		this.events = {
 			chat: this.chatWrite.bind(this),
 			equipment: this.equipmentInit.bind(this),
@@ -70,12 +72,14 @@ class Player {
 		this.equipment.slots = object;
 		// this.inventory.reload();
 		this.equipment.init();
+		this.dragger.bindNode(this.equipment.root);
 	}
 	inventoryInit(object) {
 		console.log(object);
 		this.inventory.slots = object;
 		// this.inventory.reload();
 		this.inventory.init();
+		this.dragger.bindNode(this.inventory.root);
 	}
 	itemMove() {
 		

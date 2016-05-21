@@ -8,8 +8,12 @@
 	bottom: 10px;
 	right: 10px;
 }
-#table-equipment {
+#table-equipment, hr, #table-inventory {
 	float: right;
+	clear:both;
+}
+hr {
+	visibility: hidden;
 }
 #chat {
 	position: absolute;

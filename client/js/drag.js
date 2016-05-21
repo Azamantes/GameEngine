@@ -1,15 +1,20 @@
 class DragDrop {
-	constructor() {
+	constructor(ws) {
+		this.websocket = ws;
 		this.element = null;
 		this.elementParent = null;
-		// const inventory = document.getElementById('inventory');
-		// inventory.addEventListener('dragstart', this.drag.bind(this));
-		// inventory.addEventListener('dragover', this.allow.bind(this));
-		// inventory.addEventListener('drop', this.drop.bind(this));
-		// const equipment = document.getElementById('equipment');
-		// equipment.addEventListener('dragstart', this.drag.bind(this));
-		// equipment.addEventListener('dragover', this.allow.bind(this));
-		// equipment.addEventListener('drop', this.drop.bind(this));
+		this.eqSlotList = ['head', 'ring1', 'ring2', 'neck', 'chest',
+			'hand-left'.replace(/\-/, '\\\\-'),
+			'hand-right'.replace(/\-/, '\\\\-'),
+			'gloves', 'pants', 'waist', 'boots'
+		];
+		this.regexp = new RegExp('(inv\\-item#[0-9]+)|(eq\\-(' + this.eqSlotList.join('|') + '))', '');
+		this.targetString = 'TDIMG';
+	}
+	bindNode(node) {
+		node.addEventListener('dragstart', this.drag.bind(this));
+		node.addEventListener('dragover', this.allow.bind(this));
+		node.addEventListener('drop', this.drop.bind(this));	
 	}
 	clear() {
 		this.element = null;
@@ -19,6 +24,14 @@ class DragDrop {
 		event.preventDefault();
 	}
 	drag(event) {
+		const target = event.target.tagName === 'IMG';
+		const parentID = event.target.parentNode.id;
+		const regexp = this.regexp;
+
+		if(!target || !regexp.test(parentID)) {
+			console.log('Nie jest to item');
+			return;
+		}
 		// if(event.target.parentNode.className.indexOf('item') === -1) {
 		// 	return;
 		// };
@@ -27,17 +40,32 @@ class DragDrop {
 	}
 	drop(event) {
 		event.preventDefault();
-		const target = event.target;
+		const target = event.target.tagName;
 
-		if(target.tagName === 'IMG') {
-			return this.swap(event);
-		} else if(target.tagName === 'TD') { //&& target.className.indexOf('item') !== -1) {
-			target.appendChild(this.element);
+		// tutaj wszystko sie bedzie dziac
+
+		if(!this.targetString.includes(target)) {
+			console.log('be');
+			return;
 		}
-	}
-	swap(event) {
-		const element = event.target;
-		element.parentNode.replaceChild(this.element, event.target);
-		this.elementParent.appendChild(element);
+		
+		const slotFrom = this.element.tagName === 'IMG'? this.elementParent.id : this.element.id;
+		const slotTo = event.target.tagName === 'IMG'? event.target.parentNode.id : event.target.id;
+
+		console.log(slotFrom, slotTo);
+		this.websocket.sendJSON({
+			event: 'containerDragDrop',
+			from: slotFrom,
+			to: slotTo,
+		});
+
+		if(event.target.tagName === 'IMG') {
+			const element = event.target;
+			element.parentNode.replaceChild(this.element, event.target);
+			this.elementParent.appendChild(element);
+			return;
+		} else if(event.target.tagName === 'TD') {
+			event.target.appendChild(this.element);
+		}
 	}
 }

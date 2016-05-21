@@ -120,5 +120,3 @@ const player = new Player({
 	},
 	chatNode: doc.get('chat')
 });
-
-const dragger = new DragDrop;

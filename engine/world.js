@@ -154,6 +154,21 @@ class World {
 		this.players[player.id] = null;
 		console.log('Player #' + player.id + ' left the game.');
 		return true;
-	}	
+	}
+	switchPlayerContainerSlots(player, config, callback) {
+		// potrzebna procedura
+		if(config.from.container === 'inv' && config.to.container === 'inv') { // player tries to switch items inside inventory alone
+			// po prostu zamien slot1 z slot2
+			player.inventory.switch(config.from.slot, config.to.slot);
+		} else if(config.from.container === 'inv' && config.to.container === 'eq') { // look first if condition...
+			// need to update stats
+			const item = player.inventory.take(config.from.slot); // remove item from inventory
+			player.equipment.put(config.to.slot, item); // put this item into equipment slot
+		} else if(config.from.container === 'eq' && config.to.container === 'eq') { // look first if condition...
+			player.inventory.switch(config.to.item, config.to.item);
+		} else if(config.from.container === 'eq' && config.to.container === 'inv') { // look first if condition...
+			// need to update stats
+		}
+	}
 };
 module.exports = World;
