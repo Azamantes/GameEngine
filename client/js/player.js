@@ -5,7 +5,7 @@ class Player {
 		// // WEBSOCKET
 		// // --------------------
 		this.chatNode = config.chatNode;
-		this.websocket = new WebSocket('ws://192.168.97.100:8080');
+		this.websocket = new WebSocket('ws://localhost:8080');
 		this.dragger = new DragDrop(this.websocket);
 		this.websocket.sendJSON = function(data){
 			this.send(JSON.stringify(data));
@@ -24,6 +24,7 @@ class Player {
 			chat: this.chatWrite.bind(this),
 			equipment: this.equipmentInit.bind(this),
 			inventory: this.inventoryInit.bind(this),
+			dragdrop: this.dragdrop.bind(this),
 		};
 	}
 	websocketOpen(){
@@ -42,6 +43,7 @@ class Player {
 		// console.log(data.data);
 		// const [header, tail] = this.getEventHeader(data.event);
 		// this.handleEventHeader(header, tail, data);
+		console.log('EVENT:', data.event, 'FUNCTION:', this.events[data.event]);
 		this.events[data.event] && this.events[data.event](data.data);
 	}
 	websocketClose() {
@@ -83,5 +85,18 @@ class Player {
 	}
 	itemMove() {
 		
+	}
+	dragdrop(message) {
+		console.log('woohooo:', message);
+		switch(message) {
+			case 'Success': console.log('jest sukces'); this.dragger.callFromQueue(); break;
+			case 'Failure': this.dragger.removeFromQueue(); break;
+		}
+	}
+	failure() {
+		console.log('Oops.');
+	}
+	success() {
+		console.log('Oops.');
 	}
 }

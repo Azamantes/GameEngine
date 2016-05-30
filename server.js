@@ -8,7 +8,10 @@ const DEBUG = true;
 
 const WebsocketServer = require('ws').Server;
 const server = new WebsocketServer({
-	port: 8080
+	// ssl: true,
+	port: 8080,
+	// ssl_key: '/xampp/apache/conf/ssl.key/server.key',
+	// ssl_cert: '/xampp/apache/conf/ssl.crt/server.crt',
 });
 
 const database = require('mysql').createConnection({
@@ -24,9 +27,10 @@ database.connect();
 // CREATE GAME WORLD
 // ------------------
 const World = require('./engine/world.js');
-const Setup = require('./user.js');
-const User = Setup.User;
-Setup.Init(new World(database)); // database is in the world.js file since Game World is the only object doing queries.
+const Game = new World(database);
+
+const {Init, User} = require('./user.js');
+Init(Game); // database is in the world.js file since Game World is the only object doing queries.
 
 
 // -------------------
@@ -35,11 +39,12 @@ Setup.Init(new World(database)); // database is in the world.js file since Game 
 server.on('connection', userConnection);
 
 function userConnection(ws) {
-
 	log('Nowe polaczenie: ' + ws.upgradeReq.connection.remoteAddress);
 
-
-	const user = new User({ socket: ws });
+	const user = new User({
+		socket: ws,
+		world: Game,
+	});
 
 	ws.on('message', user.handleMessage.bind(user));
 	ws.on('close', (a, b) => {

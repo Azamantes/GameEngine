@@ -8,8 +8,21 @@
 	$mysqli -> query("INSERT INTO item_images(source) VALUES ('sword2.png')");
 	$mysqli -> query("INSERT INTO item_materials(name) VALUES ('iron')");
 	$mysqli -> query("INSERT INTO item_qualities(name) VALUES ('poor')");
-	$mysqli -> query("INSERT INTO item_slots(name) VALUES ('helm')");
+	
 	$mysqli -> query("INSERT INTO item_types(name) VALUES ('sword')");
+	
+	$mysqli -> query("INSERT INTO item_slots(name) VALUES ('helm')");
+	$mysqli -> query("INSERT INTO item_slots(name) VALUES ('neck')");
+	$mysqli -> query("INSERT INTO item_slots(name) VALUES ('ring1')");
+	$mysqli -> query("INSERT INTO item_slots(name) VALUES ('ring2')");
+	$mysqli -> query("INSERT INTO item_slots(name) VALUES ('hand-left')");
+	$mysqli -> query("INSERT INTO item_slots(name) VALUES ('chest')");
+	$mysqli -> query("INSERT INTO item_slots(name) VALUES ('hand-right')");
+	$mysqli -> query("INSERT INTO item_slots(name) VALUES ('gloves')");
+	$mysqli -> query("INSERT INTO item_slots(name) VALUES ('pants')");
+	$mysqli -> query("INSERT INTO item_slots(name) VALUES ('waist')");
+	$mysqli -> query("INSERT INTO item_slots(name) VALUES ('boots')");
+
 	$mysqli -> query("INSERT INTO item_models(name) VALUES ('Sword test')");
 	$mysqli -> query("INSERT INTO item_models(name, image) VALUES ('Sword2 test', 2)");
 

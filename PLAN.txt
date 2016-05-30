@@ -24,7 +24,9 @@ Silnik w Node.js : {
 	gracze : {
 		laczenie sie
 		korzystanie z interfejsu : {
-			zarzadzanie itemami
+			zarzadzanie itemami : {
+				przenoszenie itemow (inv-inv, eq-eq, inv-eq, eq-inv)
+			}
 		}
 		rozlaczanie sie
 	}

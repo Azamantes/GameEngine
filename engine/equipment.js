@@ -3,11 +3,12 @@
 // --------------
 // Dependencies
 // --------------
-// ...
+const Container = require('./items/container.js');
 
-const Equipment = class EQUIPMENT {
+class Equipment extends Container {
 	constructor(config) {
-		this.slots = config.slots;
+		super(config);
+		this.name = 'equipment';
 	}
 }
 module.exports = Equipment;

@@ -141,17 +141,45 @@ class User {
 			console.warn('[' + this.player.id + ']: Could not create item.');
 		}
 	}
-	inventoryMoveItem(config) {
-		console.log(config);
+	containerDragDrop(data) {
+		// console.log(data);
 		
 		// jakie sa mozliwosci:
 		// - inv :: inv
 		// - inv :: eq
 		// - eq :: eq
 		// - eq :: inv
-		Game.switchPlayerContainerSlots(this.player, config, (function() {
 
-		}).bind(this));
+		const swapped = this.player.moveItems({
+			from: data.from,
+			to: data.to,
+		});
+
+		this.unicast({
+			event: 'dragdrop',
+			data: swapped? 'Success' : 'Failure',
+		});
+
+		// const config = {
+		// 	player: this.player,
+		// 	from: data.from,
+		// 	to: data.to,
+		// 	success: (function() { // success
+		// 		this.unicast({
+		// 			event: 'dradrop',
+		// 			message: 'success',
+		// 		});
+		// 	}).bind(this),
+		// 	failure: (function() { // failure
+		// 		this.unicast({
+		// 			event: 'dradrop',
+		// 			message: 'Failure',
+		// 		});
+		// 	}).bind(this)
+		// };
+
+		// wykonuja ta funkcje, tam robie database query i jak sie uda to wykonuje sukces, jak nie to failure
+		// Game.playerDragDrop(config);
 
 		// const switched = this.inventory.switch(slotFrom, slotTo);
 		// if(!switched) {
@@ -160,14 +188,6 @@ class User {
 		// this.unicast({
 		// 	event: ''
 		// });
-	}
-	containerDragDrop(config) {
-		const slotFrom = config.from;
-		const slotTo = config.to;
-
-		console.log('dragdrop:', slotFrom, slotTo);
-
-		this.player.manageContainerDragDrop(slotFrom, slotTo);
 	}
 };
 User.prototype.events = new Set([

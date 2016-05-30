@@ -4,17 +4,19 @@ class DragDrop {
 		this.element = null;
 		this.elementParent = null;
 		this.eqSlotList = ['head', 'ring1', 'ring2', 'neck', 'chest',
-			'hand-left'.replace(/\-/, '\\\\-'),
-			'hand-right'.replace(/\-/, '\\\\-'),
-			'gloves', 'pants', 'waist', 'boots'
+			'hand-left'.replace(/\-/, '\\-'),
+			'hand-right'.replace(/\-/, '\\-'),
+			'palms', 'legs', 'waist', 'feet'
 		];
-		this.regexp = new RegExp('(inv\\-item#[0-9]+)|(eq\\-(' + this.eqSlotList.join('|') + '))', '');
+		this.regexp = new RegExp('(inv#[0-9]+)|(eq#(' + this.eqSlotList.join('|') + '))', '');
 		this.targetString = 'TDIMG';
+
+		this.queue = [];
 	}
 	bindNode(node) {
 		node.addEventListener('dragstart', this.drag.bind(this));
 		node.addEventListener('dragover', this.allow.bind(this));
-		node.addEventListener('drop', this.drop.bind(this));	
+		node.addEventListener('drop', this.drop.bind(this));
 	}
 	clear() {
 		this.element = null;
@@ -29,12 +31,9 @@ class DragDrop {
 		const regexp = this.regexp;
 
 		if(!target || !regexp.test(parentID)) {
-			console.log('Nie jest to item');
-			return;
+			return console.log('Nie jest to item');
 		}
-		// if(event.target.parentNode.className.indexOf('item') === -1) {
-		// 	return;
-		// };
+
 		this.element = event.target;
 		this.elementParent = this.element.parentNode;
 	}
@@ -42,30 +41,42 @@ class DragDrop {
 		event.preventDefault();
 		const target = event.target.tagName;
 
-		// tutaj wszystko sie bedzie dziac
-
 		if(!this.targetString.includes(target)) {
-			console.log('be');
 			return;
 		}
 		
 		const slotFrom = this.element.tagName === 'IMG'? this.elementParent.id : this.element.id;
-		const slotTo = event.target.tagName === 'IMG'? event.target.parentNode.id : event.target.id;
+		const slotTo = target === 'IMG'? event.target.parentNode.id : event.target.id;
 
-		console.log(slotFrom, slotTo);
 		this.websocket.sendJSON({
 			event: 'containerDragDrop',
 			from: slotFrom,
 			to: slotTo,
 		});
-
-		if(event.target.tagName === 'IMG') {
-			const element = event.target;
-			element.parentNode.replaceChild(this.element, event.target);
-			this.elementParent.appendChild(element);
-			return;
-		} else if(event.target.tagName === 'TD') {
-			event.target.appendChild(this.element);
+		this.queue.push({
+			target: event.target,
+			tag: target,
+		});
+	}
+	finishDrop(config) {
+		switch(config.tag) {
+			case 'IMG': {
+				const element = config.target;
+				element.parentNode.replaceChild(this.element, config.target);
+				this.elementParent.appendChild(element);
+				break;
+			}
+			case 'TD': {
+				config.target.appendChild(this.element);
+				break;
+			}
 		}
+	}
+	callFromQueue() {
+		const config = this.queue.shift();
+		this.finishDrop(config);
+	}
+	removeFromQueue() {
+		this.queue.shift();
 	}
 }

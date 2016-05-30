@@ -23,8 +23,6 @@ const Location = class LOCATION extends Channel {
 			return !!console.warn('This player is already in this location.');
 		}
 
-		console.log('Nowy gracz:', player);
-
 		this.shout('chat', 'New player: ' + player.name);
 		return this.players[player.id] = true;
 	}

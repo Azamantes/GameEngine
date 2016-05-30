@@ -21,7 +21,7 @@ class Inventory {
 			cell = -1;
 			while(++cell < 10) {
 				++i;
-				box = m('td', { id: 'inv-item#' + i });
+				box = m('td', { id: 'inv#' + i });
 				if(this.slots[i]) {
 					box.children.push(
 						m('img', {

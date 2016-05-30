@@ -19,8 +19,8 @@ class Character {
 		// this.inventory = new Inventory({
 		// 	owner: this
 		// });
-		this.inventory = null;
-		this.equipment = null;
+		this.inventory = config.inventory;
+		this.equipment = config.equipment;
 		// this.inventory = new Inventory({
 		// 	slots: config.inventory,
 		// 	owner: this,
@@ -93,6 +93,8 @@ class Character {
 		};
 		this.locationListeners = ['chat', 'status'];
 		this.teamListeners = ['team'];
+
+		this.update = config.GameUpdates;
 
 		// start living :)
 		this.appearInLocation();
@@ -198,8 +200,7 @@ class Character {
 				while(++i < length) {
 					box = array[i];
 					channel.listen(box, this.listeners[box]);
-				}
-				break;
+				} break;
 			}
 			case 'swap': {
 				const channel_1 = config.channel_1;
@@ -208,12 +209,12 @@ class Character {
 				if(!areChannels) {
 					return ThrowError('Given channels are not valid.');
 				}
+				
 				while(++i < length) {
 					box = array[i];
 					channel_1.delete(box, this.listeners[box]);
 					channel_2.listen(box, this.listeners[box]);
-				}
-				break;
+				} break;
 			}
 			case 'stop': {
 				const channel = config.channel;
@@ -225,8 +226,7 @@ class Character {
 				while(++i < length) {
 					box = array[i];
 					channel.delete(box, this.listeners[box]);
-				}
-				break;
+				} break;
 			}
 		}
 		return true;
@@ -263,7 +263,7 @@ class Character {
 	// ----------
 	listenChat(value) {
 		this.connection.unicast({
-			event: 'location:chat',
+			event: 'chat',
 			message: this.location.name + value
 		});
 	}
@@ -283,20 +283,99 @@ class Character {
 	// ----------
 	// CONTAINER ITEM MANAGEMENT
 	// ----------
-	manageContainerDragDrop(slotFrom, slotTo) {
+	moveItems(config) {
+		const check = { eq: 'equipment', inv: 'inventory' };
+		let [typeFrom, slotFrom] = config.from.split('#');
+		let [typeTo, slotTo] = config.to.split('#');
 
-		// inv inv ->
+		// const arrayFrom = config.from.split('#');
+		// const arrayTo = config.to.split('#');
+		// const typeFrom = arrayFrom[0];
+		// const slotFrom = ~~arrayFrom[1];
+		// const typeTo = arrayTo[0];
+		// const slotTo = arrayTo[1];
 
-		// inv eq ->
-			
-		// eq eq ->
-			
-		// eq inv ->
-			
+		
+		if(!check[typeFrom] || !check[typeTo]) {
+			config.failure();
+		}
 
-		// if(/inv\-item#[0-9]/.test(slotFrom)) {
-		// 	slotFrom = slotFrom.replace(/[^0-9]/g, '');
-		// } else if(//)
+		console.log('[Player.swapItems]: OK, passed the check.');
+
+		const permutation = typeFrom + ':' + typeTo;
+		let moved = false;
+		console.log(`Mamy sytuacje ${permutation}.`);
+		switch(permutation) {
+			case 'inv:inv': {
+				moved = this.inventory.swap(~~slotFrom, ~~slotTo);
+				if(moved) { // perform database query to update it.
+					this.update.swapItemsInv([this.id, ~~slotFrom, ~~slotTo]);
+				}
+				break;
+			}
+			case 'inv:eq': {
+
+				moved = this.moveItem({
+					slotFrom, slotTo,
+					typeFrom: check[typeFrom],
+					typeTo: check[typeTo],
+				});
+				if(moved) {
+					const itemID = this[check[typeTo]].get(slotTo).id;
+					console.log('To jest slotTo:', slotTo);
+					this.update.moveItemInvEq([slotTo, this.id, itemID]);
+				}
+				
+				break;
+			}
+			case 'eq:inv': {
+				moved = this.moveItem({
+					slotFrom, slotTo,
+					typeFrom: check[typeFrom],
+					typeTo: check[typeTo],
+				});
+				if(moved) {
+					const itemID = this[check[typeTo]].get(slotTo).id;
+					console.log('To jest slotTo:', slotTo);
+					this.update.moveItemEqInv([~~slotTo, this.id, itemID]);
+				}
+
+				break;
+			}
+			default: {
+				console.log('Switch default.');
+			}
+		}
+		
+		// console.log(!!this[check[typeFrom]].slots[slotFrom], !!this[check[typeTo]].slots[slotFrom]);
+		console.log('moved:', moved);
+		return moved;
+	}
+	moveItem(config) {
+		const containerFrom = this[config.typeFrom]; // inventory or requipment
+		const containerTo = this[config.typeTo]; // inventory or requipment
+
+		let hasItem = containerFrom.has(config.slotFrom);
+		if(!hasItem) {
+			console.log(config.typeFrom, 'nie ma itemu w slocie', config.slotFrom);
+			return false;
+		}
+
+		let isAvailable = containerTo.isFree(config.slotTo);
+		if(!isAvailable) {
+			console.log(config.typeTo, ' ma zajety slot', config.slotTo);
+			return false;
+		}
+
+		const item = containerFrom.take(config.slotFrom);
+		const succeeded = containerTo.put(item, config.slotTo);
+		if(!succeeded) {
+			console.log('Nie udalo sie wstawic itemu do', config.typeTo);
+			containerFrom.put(item, config.slotFrom);
+			return false;
+		}
+
+		return true;
 	}
 };
 module.exports = Character;

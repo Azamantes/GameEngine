@@ -3,33 +3,24 @@
 // --------------
 // Dependencies
 // --------------
-// ...
+const Container = require('./items/container.js');
 
-class Inventory {
-	constructor(config = {}) {
-		this.owner = config.owner || null; // to check if you can even carry that much weight
+class Inventory extends Container {
+	constructor(config) {
+		super(config);
+		this.name = 'inventory';
 		// this.capacity = config.capacity || 100;
 		// this.count = config.count || 0;
-		this.slots = config.slots; // which slots are occupied. // 1 - 100, not 0 - 99
-		// this.container = config.container || {}; // maps item.id -> item
-		// console.log('To sa itemy:', this.slots);
 	}
+	swap(slotFrom, slotTo) {
+		slotFrom = ~~slotFrom;
+		slotTo = ~~slotTo;
 
-	put(slot, item) { // puts [item] in the given [slot]
-		const slotFree = !this.slots[slot];
-		// const capacityReached = this.count === this.capacity;
-		if(!slotFree) {
-			return console.log(`Slot#${slot} is occupied.`);
-		}
+		const itemTo = this.slots[slotTo];
+		this.slots[slotTo] = this.slots[slotFrom];
+		this.slots[slotFrom] = itemTo;
 
-		this.slots[slot] = item;
-		// this.container[item.id] = item;
+		return true;
 	}
-	// show() {
-	// 	const 
-	// 	Object.keys(this.slots).map(slot => {
-
-	// 	});
-	// }
 }
 module.exports = Inventory;

@@ -17,8 +17,30 @@ const Location = require('./location.js');
 // ----------
 const SQL = {
 	character: {
-		info: 'SELECT charName, charLocation FROM myCharacters WHERE userID = ? AND charID = ?;',
-		items: 'SELECT itemID, itemName, slotType, itemSlot, itemSlotString, itemImage FROM myItems WHERE charID = ?;',
+		info: `SELECT charName, charLocation
+				FROM myCharacters
+				WHERE userID = ?
+					AND charID = ?;`,
+		items: `SELECT itemID, itemName, slotType, itemSlot, itemSlotString, itemImage
+				FROM myItems
+				WHERE charID = ?;`,
+		swapItemsInv: `CALL swapItemsInv(?, ?, ?);`,
+		moveItemInvEq: `UPDATE characters_items ci
+						SET ci.type = (
+								SELECT id FROM inventory_types WHERE name = 'equipment'
+							),
+							ci.slot = (
+								SELECT id FROM equipment_slots WHERE name = ?
+							)
+						WHERE ci.character = ?
+							AND ci.item = ?;`,
+		moveItemEqInv: `UPDATE characters_items ci
+						SET ci.type = (
+								SELECT id FROM inventory_types WHERE name = 'inventory'
+							),
+							ci.slot = ?
+						WHERE ci.character = ?
+							AND ci.item = ?;`,
 	},
 	location: {
 		players: 'SELECT `character` AS charID FROM locations_characters WHERE location = ?;',
@@ -42,6 +64,12 @@ class World {
 		this.items = {};
 
 		this.createLocations();
+
+		this.update = Object.freeze({
+			swapItemsInv: this.swapItemsInv.bind(this),
+			moveItemInvEq: this.moveItemInvEq.bind(this),
+			moveItemEqInv: this.moveItemEqInv.bind(this),
+		});
 	}
 
 	// ----------
@@ -74,58 +102,62 @@ class World {
 	// PLAYERS
 	// ----------
 	createPlayer(config, callback) {
-		const userID = parseInt(config.user);
-		const characterID = parseInt(config.character);
-		console.log('User#' + userID + ' logged in as  character#' + characterID + '.');
-		
-		if(this.players[characterID]){
-			console.log('Player#' + config.id + ' already exists.'); // false
+		const userID = config.user = parseInt(config.user);
+		const charID = config.id = parseInt(config.character);
+
+		console.log('Login: user #' + userID + ' as [' + charID + '].');
+		if(this.players[charID]){
+			console.log('Player#' + charID + ' already exists.'); // false
 			return null;
-		}	
+		}
 
-		config.id = characterID;
-		config.location = this.locations[1];
-
-		const inventorySlots = {};
-		const equipmentSlots = {};
-
-		this.database.query(SQL.character.info, [userID, characterID])
-		.on('result', row => {
-			console.log(`GAME WORLD: wybrano nowy nick ${row.charName}`);
-			config.name = row.charName;
-			config.location = this.locations[row.charLocation];
-			console.log('To jest name:', row.charName);
-			console.log('To jest charID:', characterID);
-			this.database.query(SQL.character.items, [characterID])
+		config.GameUpdates = this.update;
+		this.getPlayerInfo(config, callback)
+			.then(this.getPlayerItems.bind(this));
+	}
+	getPlayerInfo(char, callback) {
+		return new Promise((PASS, FAIL) => {
+			this.database.query(SQL.character.info, [char.user, char.id]) // char.id === char.character
 			.on('result', row => {
-				console.log('Jest nowy item postaci#' + characterID);
-				row.itemID = ~~row.itemID;
-				row.slotType = ~~row.slotType;
-				row.itemSlot = ~~row.itemSlot;
-				if(row.slotType === 1) { // inventory
-					console.log('slotType === 1', row.itemID);
-					inventorySlots[row.itemSlot] = new Item({
-						id: row.itemID,
-						name: row.itemName,
-						src: row.itemImage,
-					});
-				} else if(row.slotType === 2) { // equipment
-					console.log('slotType === 2', row.itemID);
-					equipmentSlots[row.itemSlotString] = new Item({
-						id: row.itemID,
-						name: row.itemName,
-						src: row.itemImage,
-					});
-				}
-			}).on('errur', error => {
-				console.log('Game.createPlayer [ERROR] ::', error.message);
-			}).on('end', () => {
-				const character = new Character(config);
-				character.inventory = new Inventory({ slots: inventorySlots });
-				character.equipment = new Equipment({ slots: equipmentSlots });
-				this.players[character.id] = character;
-				callback(character);
+				char.name = row.charName;
+				char.location = this.locations[row.charLocation];
+				PASS([char, callback]);
+			})
+			.on('end', FAIL);
+		});
+	}
+	getPlayerItems(array) {
+		const char = array[0];
+		const callback = array[1];
+		const slotsINV = {};
+		const slotsEQ = {};
+		let item;
+
+		this.database.query(SQL.character.items, [char.id])
+		.on('result', row => {
+			item = new Item({
+				id: ~~row.itemID,
+				name: row.itemName,
+				src: row.itemImage,
 			});
+
+			switch(~~row.slotType) { // possibly more options later
+				case 1: {
+					slotsINV[~~row.itemSlot] = item;
+					break;
+				}
+				case 2: {
+					slotsEQ[row.itemSlotString] = item;
+					break;
+				}
+			}
+		}).on('error', error => {
+			console.log('Game.createPlayer [ERROR] ::', error.message);
+		}).on('end', () => {
+			char.inventory = new Inventory({ slots: slotsINV });
+			char.equipment = new Equipment({ slots: slotsEQ });
+			this.players[char.id] = new Character(char);
+			callback(this.players[char.id]);
 		});
 	}
 	getPlayer(id) {
@@ -155,20 +187,45 @@ class World {
 		console.log('Player #' + player.id + ' left the game.');
 		return true;
 	}
-	switchPlayerContainerSlots(player, config, callback) {
-		// potrzebna procedura
-		if(config.from.container === 'inv' && config.to.container === 'inv') { // player tries to switch items inside inventory alone
-			// po prostu zamien slot1 z slot2
-			player.inventory.switch(config.from.slot, config.to.slot);
-		} else if(config.from.container === 'inv' && config.to.container === 'eq') { // look first if condition...
-			// need to update stats
-			const item = player.inventory.take(config.from.slot); // remove item from inventory
-			player.equipment.put(config.to.slot, item); // put this item into equipment slot
-		} else if(config.from.container === 'eq' && config.to.container === 'eq') { // look first if condition...
-			player.inventory.switch(config.to.item, config.to.item);
-		} else if(config.from.container === 'eq' && config.to.container === 'inv') { // look first if condition...
-			// need to update stats
+	swapItemsInv(array) {
+		if(array.length !== 3) {
+			return console.warn('Game.swapItemsInv array.length !== 3.');
 		}
+
+		const allNumbers = array.every(x => typeof x === 'number');
+		if(!allNumbers) {
+			return console.warn('Game.swapItemsInv not all array elements are numbers.');
+		}
+		
+		console.log('Array:', array);
+		this.databaseQuery(SQL.character.swapItemsInv, array);
+	}
+	moveItemInvEq(array) {
+		if(array.length !== 3) {
+			return console.warn('Game.moveItemInvEq array.length !== 3.');
+		}
+
+		console.log('Array:', array);
+		this.databaseQuery(SQL.character.moveItemInvEq, array);
+	}
+	moveItemEqInv(array) {
+		if(array.length !== 3) {
+			return console.warn('Game.moveItemEqInv array.length !== 3.');
+		}
+
+		const allNumbers = array.every(x => typeof x === 'number');
+		if(!allNumbers) {
+			return console.warn('Game.moveItemEqInv not all array elements are numbers.');
+		}
+		
+		console.log('Array:', array);
+		this.databaseQuery(SQL.character.moveItemEqInv, array);
+	}
+	databaseQuery(SQL, array) {
+		this.database.query(SQL, array)
+		.on('error', error => {
+			console.warn('Game.moveItemInvInv: [ERROR] :: ' + error.message);
+		});
 	}
 };
 module.exports = World;
