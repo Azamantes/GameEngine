@@ -72,7 +72,7 @@ class User {
 		// very basic and primitive character init
 
 
-		data.config.connection = this;
+		data.config.socketSend = this.unicast.bind(this);
 		Game.createPlayer(data.config, this.setPlayer.bind(this));
 	}
 	disconnect() {
@@ -103,12 +103,10 @@ class User {
 		this.sendInitCharacterInformation();
 	}
 	sendInitCharacterInformation() {
-		// console.log('wysle equipment:', thisequipment);
 		this.unicast({
 			event: 'equipment',
 			data: this.player.equipment.slots
 		});
-		// console.log('wysle inventory:', inventory);
 		this.unicast({
 			event: 'inventory',
 			data: this.player.inventory.slots
@@ -142,14 +140,6 @@ class User {
 		}
 	}
 	containerDragDrop(data) {
-		// console.log(data);
-		
-		// jakie sa mozliwosci:
-		// - inv :: inv
-		// - inv :: eq
-		// - eq :: eq
-		// - eq :: inv
-
 		const swapped = this.player.moveItems({
 			from: data.from,
 			to: data.to,
@@ -159,35 +149,6 @@ class User {
 			event: 'dragdrop',
 			data: swapped? 'Success' : 'Failure',
 		});
-
-		// const config = {
-		// 	player: this.player,
-		// 	from: data.from,
-		// 	to: data.to,
-		// 	success: (function() { // success
-		// 		this.unicast({
-		// 			event: 'dradrop',
-		// 			message: 'success',
-		// 		});
-		// 	}).bind(this),
-		// 	failure: (function() { // failure
-		// 		this.unicast({
-		// 			event: 'dradrop',
-		// 			message: 'Failure',
-		// 		});
-		// 	}).bind(this)
-		// };
-
-		// wykonuja ta funkcje, tam robie database query i jak sie uda to wykonuje sukces, jak nie to failure
-		// Game.playerDragDrop(config);
-
-		// const switched = this.inventory.switch(slotFrom, slotTo);
-		// if(!switched) {
-
-		// }
-		// this.unicast({
-		// 	event: ''
-		// });
 	}
 };
 User.prototype.events = new Set([
@@ -201,7 +162,7 @@ User.prototype.events = new Set([
 	'inventoryMoveItem',
 	'containerDragDrop',
 ]);
-User.prototype.Game = null;
+
 module.exports = { User, Init };
 
 // if you want to add some functionality you have to do the following:

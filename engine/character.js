@@ -10,7 +10,7 @@ const ThrowError = require('./team.js').Error;
 
 class Character {
 	constructor(config = {}) {
-		this.connection = config.connection; // for handling socket connection
+		this.socketSend = config.socketSend; // for handling socket connection
 
 		this.id = config.id;
 		this.name = config.name;
@@ -262,19 +262,19 @@ class Character {
 	// LISTENERS
 	// ----------
 	listenChat(value) {
-		this.connection.unicast({
+		this.socketSend({
 			event: 'chat',
 			message: this.location.name + value
 		});
 	}
 	listenTeam(message) {
-		this.connection.unicast({
+		this.socketSend({
 			event: 'team:chat',
 			message: this.team.name + message
 		});
 	}
 	listenTeamMemberStatus(message) {
-		this.connection.unicast({
+		this.socketSend({
 			event: 'team:membersStatus',
 			message: message
 		});
