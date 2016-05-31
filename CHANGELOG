@@ -1,0 +1,7 @@
+Inventory & Equipment:
+- inventory -> inventory
+- inventory -> equipment
+- equipment -> inventory
+- positions of items are properly saved.
+
+This feature is not tested to the full extent, so bugs may occur.

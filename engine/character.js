@@ -299,12 +299,12 @@ class Character {
 			case 'inv:inv': {
 				moved = this.inventory.swap(~~slotFrom, ~~slotTo);
 				if(moved) { // perform database query to update it.
-					this.update.swapItemsInv([this.id, ~~slotFrom, ~~slotTo]);
+					this.update.swapItemsInv([this.id, slotFrom, slotTo]);
 				}
+
 				break;
 			}
 			case 'inv:eq': {
-				// const slotToCut = slotTo.replace(/\-.*/g, ''); // hand-right or hand-left -> just 'hand'
 				const item = this.inventory.get(slotFrom);
 				moved = this.equipment.canEquip(item, slotTo);
 				if(!moved) {
@@ -345,8 +345,6 @@ class Character {
 				console.log('Switch default.');
 			}
 		}
-		
-		// console.log(!!this[check[typeFrom]].slots[slotFrom], !!this[check[typeTo]].slots[slotFrom]);
 		console.log('moved:', moved);
 		return moved;
 	}
