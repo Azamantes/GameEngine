@@ -12,9 +12,9 @@ class Item {
 		this.src = config.src;
 		this.model = config.model;
 		this.type = config.type;
-		// this.quality = config.quality;
-		// this.grade = config.grade;
-		// this.weight = config.weight;
+		this.quality = config.quality;
+		this.grade = config.grade;
+		this.weight = config.weight;
 		this.slot = config.slot;
 		// this.effects = config.effects;
 		// this.skills = config.skills;
@@ -30,8 +30,8 @@ class Item {
 		
 			// there are 32 bits, try to utilize as much of them as you can.
 
-		this.requiredStats = config.requiredStats;
-		this.usableBy = config.usableBy;
+		// this.requiredStats = config.requiredStats;
+		// this.usableBy = config.usableBy;
 		this.material = config.material;
 	}
 }

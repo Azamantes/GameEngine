@@ -16,19 +16,9 @@ class Character {
 		this.name = config.name;
 		this.alignment = 0;
 		
-		// this.inventory = new Inventory({
-		// 	owner: this
-		// });
 		this.inventory = config.inventory;
 		this.equipment = config.equipment;
-		// this.inventory = new Inventory({
-		// 	slots: config.inventory,
-		// 	owner: this,
-		// });
 
-		// this.inventory = new Inventory(config.inventory);
-		// console.log('jest nowe inventory', this.inventory);
-		// this.equipment = new Equipment();
 		this.skillbook = null; // new Skillbook()
 		this.talentTree = null; // new TalentTree()
 
@@ -329,23 +319,24 @@ class Character {
 					typeTo: check[typeTo],
 				});
 				if(moved) {
-					const itemID = this[check[typeTo]].get(slotTo).id;
+					this.updateStatsAdd(item);
 					console.log('To jest slotTo:', slotTo);
-					this.update.moveItemInvEq([slotTo, this.id, itemID]);
+					this.update.moveItemInvEq([slotTo, this.id, item.id]);
 				}
 				
 				break;
 			}
 			case 'eq:inv': {
+				const item = this.equipment.get(slotFrom);
 				moved = this.moveItem({
 					slotFrom, slotTo,
 					typeFrom: check[typeFrom],
 					typeTo: check[typeTo],
 				});
 				if(moved) {
-					const itemID = this[check[typeTo]].get(slotTo).id;
+					this.updateStatsSubtract(item);
 					console.log('To jest slotTo:', slotTo);
-					this.update.moveItemEqInv([~~slotTo, this.id, itemID]);
+					this.update.moveItemEqInv([~~slotTo, this.id, item.id]);
 				}
 
 				break;
@@ -384,6 +375,19 @@ class Character {
 		}
 
 		return true;
+	}
+
+	// -----------
+	// UPDATE STATS
+	// -----------
+	updateStatsAdd(item) {
+		console.log('Add stats from item#' + item.id);
+	}
+	updateStatsSubtract(item) {
+		console.log('Subtract stats from item#' + item.id);
+	}
+	updateStats(item) {
+		
 	}
 };
 module.exports = Character;

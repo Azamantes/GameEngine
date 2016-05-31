@@ -141,6 +141,9 @@ class World {
 				slot: row.itemSlot,
 				type: row.itemType,
 				model: row.itemModel,
+				quality: row.itemQuality,
+				grade: row.itemGrade,
+				weight: row.itemWeight,
 				flags: {
 					consumable: row.isConsumable,
 					destructible: row.isDestructible,
