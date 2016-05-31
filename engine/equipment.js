@@ -10,5 +10,16 @@ class Equipment extends Container {
 		super(config);
 		this.name = 'equipment';
 	}
+	canEquip(item, slot) {
+		if(!slot.includes(item.slot)) {
+			return false;
+		}
+
+		if(!!this.slots[slot]) {
+			return false;
+		}
+
+		return true;
+	}
 }
 module.exports = Equipment;

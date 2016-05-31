@@ -8,7 +8,6 @@
 class Item {
 	constructor(config = {}) {
 		this.id = config.id;
-		this.img = config.img;
 		this.name = config.name;
 		this.src = config.src;
 		this.model = config.model;
@@ -19,6 +18,7 @@ class Item {
 		this.slot = config.slot;
 		// this.effects = config.effects;
 		// this.skills = config.skills;
+		this.flags = config.flags;
 		// this.flags = config.flags || Math.pow(2, 31) - 1;
 			// 1. consumable // can you eat/use it? scrolls, food
 			// 2. destructible // can you destroy/disassemble it?
@@ -33,27 +33,6 @@ class Item {
 		this.requiredStats = config.requiredStats;
 		this.usableBy = config.usableBy;
 		this.material = config.material;
-	}
-	isConsumable() {
-		return !!(this.flags & 1);
-	}
-	isDestructible() {
-		return !!(this.flags & (1 << 1));
-	}
-	isDurable() {
-		return !!(this.flags & (1 << 2));
-	}
-	isEquippable() {
-		return !!(this.flags & (1 << 3));
-	}
-	isReusable() {
-		return !!(this.flags & (1 << 4));
-	}
-	isStackable() {
-		return !!(this.flags & (1 << 5));
-	}
-	isUpgradable() {
-		return !!(this.flags & (1 << 6));
 	}
 }
 module.exports = Item;

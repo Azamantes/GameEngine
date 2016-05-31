@@ -21,9 +21,7 @@ const SQL = {
 				FROM myCharacters
 				WHERE userID = ?
 					AND charID = ?;`,
-		items: `SELECT itemID, itemName, slotType, itemSlot, itemSlotString, itemImage
-				FROM myItems
-				WHERE charID = ?;`,
+		items: `SELECT * FROM myItems WHERE charID = ?;`,
 		swapItemsInv: `CALL swapItemsInv(?, ?, ?);`,
 		moveItemInvEq: `UPDATE characters_items ci
 						SET ci.type = (
@@ -135,19 +133,34 @@ class World {
 
 		this.database.query(SQL.character.items, [char.id])
 		.on('result', row => {
+			console.log('nowy item slot:', row.inventorySlot, row.equipmentSlot, row.itemSlot);
 			item = new Item({
-				id: ~~row.itemID,
+				id: row.itemID,
 				name: row.itemName,
 				src: row.itemImage,
+				slot: row.itemSlot,
+				type: row.itemType,
+				model: row.itemModel,
+				flags: {
+					consumable: row.isConsumable,
+					destructible: row.isDestructible,
+					durable: row.isDurable,
+					equippable: row.isEquippable,
+					reusable: row.isReusable,
+					stackable: row.isStackable,
+					upgradable: row.isUpgradable,
+				},
+				material: row.itemMaterial,
 			});
-
-			switch(~~row.slotType) { // possibly more options later
-				case 1: {
-					slotsINV[~~row.itemSlot] = item;
+			switch(row.containerType) { // possibly more options later
+				case 'inventory': {
+					console.log('Jest inventory');
+					slotsINV[~~row.inventorySlot] = item;
 					break;
 				}
-				case 2: {
-					slotsEQ[row.itemSlotString] = item;
+				case 'equipment': {
+					console.log('Jest equipment');
+					slotsEQ[row.equipmentSlot] = item;
 					break;
 				}
 			}
@@ -156,8 +169,9 @@ class World {
 		}).on('end', () => {
 			char.inventory = new Inventory({ slots: slotsINV });
 			char.equipment = new Equipment({ slots: slotsEQ });
-			this.players[char.id] = new Character(char);
-			callback(this.players[char.id]);
+			console.log(char.inventory);
+			console.log(char.equipment);
+			callback(this.players[char.id] = new Character(char));
 		});
 	}
 	getPlayer(id) {

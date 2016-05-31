@@ -314,6 +314,14 @@ class Character {
 				break;
 			}
 			case 'inv:eq': {
+				// const slotToCut = slotTo.replace(/\-.*/g, ''); // hand-right or hand-left -> just 'hand'
+				const item = this.inventory.get(slotFrom);
+				moved = this.equipment.canEquip(item, slotTo);
+				if(!moved) {
+					console.log(slotTo, item.slot);
+					console.log(`moved === false, nie mozna zalozyc itemu`);
+					break;
+				}
 
 				moved = this.moveItem({
 					slotFrom, slotTo,
