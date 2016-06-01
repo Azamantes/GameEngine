@@ -1,7 +1,9 @@
+'use strict';
+
 class Equipment {
-	constructor(config) {
-		this.root = config.root;
-		this.slots = config.slots || {};
+	constructor(root) {
+		this.root = root;
+		this.slots = {};
 
 		this.init();
 	}
@@ -15,27 +17,27 @@ class Equipment {
 		return m('tbody', { id: 'equipment' }, [
 			m('tr', [
 				invisible,
-				m('td', { id: 'eq#head' }, slots.head? m('img', { id: slots.head.id, src: slots.head.src }) : []),
+				m('td', { id: 'eq#head' }, slots.head? m('img', { src: slots.head.src }) : []),
 				invisible,
 			]),
 			m('tr', [
-				m('td', { id: 'eq#ring1' }, slots.ring1? m('img', { id: slots.ring1.id, src: slots.ring1.src }) : []),
-				m('td', { id: 'eq#neck' }, slots.neck? m('img', { id: slots.neck.id, src: slots.neck.src }) : []),
-				m('td', { id: 'eq#ring2' }, slots.ring2? m('img', { id: slots.ring2.id, src: slots.ring2.src }) : []),
+				m('td', { id: 'eq#ring1' }, slots.ring1? m('img', { src: slots.ring1.src }) : []),
+				m('td', { id: 'eq#neck' }, slots.neck? m('img', { src: slots.neck.src }) : []),
+				m('td', { id: 'eq#ring2' }, slots.ring2? m('img', { src: slots.ring2.src }) : []),
 			]),
 			m('tr', [
-				m('td', { id: 'eq#hand-left' }, slots['hand-left']? m('img', { id: slots['hand-left'].id, src: slots['hand-left'].src }) : []),
-				m('td', { id: 'eq#chest' }, slots.chest? m('img', { id: slots.chest.id, src: slots.chest.src }) : []),
-				m('td', { id: 'eq#hand-right' }, slots['hand-right']? m('img', { id: slots['hand-right'].id, src: slots['hand-right'].src }) : []),
+				m('td', { id: 'eq#hand-left' }, slots['hand-left']? m('img', { src: slots['hand-left'].src }) : []),
+				m('td', { id: 'eq#chest' }, slots.chest? m('img', { src: slots.chest.src }) : []),
+				m('td', { id: 'eq#hand-right' }, slots['hand-right']? m('img', { src: slots['hand-right'].src }) : []),
 			]),
 			m('tr', [
-				m('td', { id: 'eq#palms' }, slots.palms? m('img', { id: slots.palms.id, src: slots.palms.src }) : []),
-				m('td', { id: 'eq#legs' }, slots.pants? m('img', { id: slots.legs.id, src: slots.legs.src }) : []),
-				m('td', { id: 'eq#waist' }, slots.waist? m('img', { id: slots.waist.id, src: slots.waist.src }) : []),
+				m('td', { id: 'eq#palms' }, slots.palms? m('img', { src: slots.palms.src }) : []),
+				m('td', { id: 'eq#legs' }, slots.pants? m('img', { src: slots.legs.src }) : []),
+				m('td', { id: 'eq#waist' }, slots.waist? m('img', { src: slots.waist.src }) : []),
 			]),
 			m('tr', [
 				invisible,
-				m('td', { id: 'eq#feet' }, slots.feet? m('img', { id: slots.feet.id, src: slots.feet.src }) : []),
+				m('td', { id: 'eq#feet' }, slots.feet? m('img', { src: slots.feet.src }) : []),
 				invisible,
 			]),
 		]);

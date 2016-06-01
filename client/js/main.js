@@ -104,19 +104,15 @@ doc.get('logout').addEventListener('click', function(event) {
 
 const player = new Player({
 	name: 'Player#1',
-	inventory: {
-		root: doc.get('table-inventory'),
-		// slots: {
-		// 	1: { id: 'item#123123', src: 'sword2.png' },
-		// },
+	nodes: {
+		inventory: doc.get('table-inventory'),
+		equipment: doc.get('table-equipment'),
+		chat: doc.get('chat'),
+		stats: doc.get('character_stats'),
 	},
-	equipment: {
-		root: doc.get('table-equipment'),
-		// slots: {
-		// 	head: { id: 'item#123', src: 'sword3.png' },
-		// 	'hand-left': { id: 'item#1323', src: 'sword5.png' },
-		// 	'hand-right': { id: 'item#13323', src: 'sword4.png' },
-		// },
-	},
-	chatNode: doc.get('chat')
 });
+
+player.setStats([
+	['HP', 100, 100],
+	['Mana', 100, 100],
+]);

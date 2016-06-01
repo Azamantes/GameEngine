@@ -8,6 +8,13 @@
 	bottom: 10px;
 	right: 10px;
 }
+#character_stats {
+	padding: 10px;
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	outline: 1px solid darkgray;
+}
 #table-equipment, hr, #table-inventory {
 	float: right;
 	clear:both;

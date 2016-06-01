@@ -209,7 +209,7 @@ class World {
 			return console.warn('Game.swapItemsInv array.length !== 3.');
 		}
 
-		const allNumbers = array.every(x => typeof x === 'number');
+		const allNumbers = array.every(x => typeof ~~x === 'number');
 		if(!allNumbers) {
 			return console.warn('Game.swapItemsInv not all array elements are numbers.');
 		}

@@ -23,6 +23,7 @@
 </head>
 <body>
 	<div id='chat'></div>
+	<div id='character_stats'></div>
 	<div id='character'>
 		<table id='table-equipment' border='1'></table>
 		<hr>
@@ -45,6 +46,7 @@
 	<script src="../client/js/channel.js"></script>
 	<script src="../client/js/interface/equipment.js"></script>
 	<script src="../client/js/interface/inventory.js"></script>
+	<script src="../client/js/interface/stats.js"></script>
 	<script src="../client/js/interface/chat.js"></script>
 	<script src="../client/js/main.js"></script>
 </html>

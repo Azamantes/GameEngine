@@ -1,12 +1,15 @@
+'use strict';
+
 class Player {
 	constructor(config) {
 		this.name = config.name;
 		// // --------------------
 		// // WEBSOCKET
 		// // --------------------
-		this.chatNode = config.chatNode;
+		this.chatNode = config.nodes.chat;
 		this.websocket = new WebSocket('ws://localhost:8080');
 		this.dragger = new DragDrop(this.websocket);
+		this.stats = new Stats(config.nodes.stats);
 		this.websocket.sendJSON = function(data){
 			this.send(JSON.stringify(data));
 		};
@@ -14,8 +17,8 @@ class Player {
 		this.websocket.onmessage = this.websocketMessage.bind(this);
 		this.websocket.onclose = this.websocketClose;
 
-		this.inventory = new Inventory(config.inventory);
-		this.equipment = new Equipment(config.equipment);
+		this.inventory = new Inventory(config.nodes.inventory);
+		this.equipment = new Equipment(config.nodes.equipment);
 		// this.equipment = null; // new Equipment(config.equipment);
 		
 		// this.dragger = new DragDrop();
@@ -64,6 +67,9 @@ class Player {
 	// 		}
 	// 	}
 	// }
+	setStats(list) {
+		this.stats.parse(list);
+	}
 	chatWrite(value) {
 		const element = doc.createElement('div');
 		element.textContent = value;

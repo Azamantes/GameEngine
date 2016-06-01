@@ -1,7 +1,7 @@
 class Inventory {
-	constructor(config) {
-		this.root = config.root;
-		this.slots = {}; // config.slots;
+	constructor(root) {
+		this.root = root;
+		this.slots = {};
 		// this.init();
 	}
 	init() {
@@ -23,12 +23,7 @@ class Inventory {
 				++i;
 				box = m('td', { id: 'inv#' + i });
 				if(this.slots[i]) {
-					box.children.push(
-						m('img', {
-							id: this.slots[i].id,
-							src: this.slots[i].src,
-						})
-					);
+					box.children.push( m('img', { src: this.slots[i].src }) );
 				}
 				row.push(box);
 			}
@@ -59,5 +54,3 @@ class Inventory {
 		}
 	}
 }
-// 		</tr>
-
