@@ -51,8 +51,9 @@ const SQL = {
 	},
 };
 
-class World {
+class World extends Channel {
 	constructor(database) {
+		super();
 		this.database = database;
 
 		this.locations = {};
@@ -172,9 +173,12 @@ class World {
 		}).on('end', () => {
 			char.inventory = new Inventory({ slots: slotsINV });
 			char.equipment = new Equipment({ slots: slotsEQ });
-			console.log(char.inventory);
-			console.log(char.equipment);
-			callback(this.players[char.id] = new Character(char));
+			// console.log(char.inventory);
+			// console.log(char.equipment);
+			const player = new Character(char);
+			this.listen(`player: ${player.id}`, player.personalListener);
+			this.listen(`player: ${player.name}`, player.personalListener);
+			callback(this.players[char.id] = player);
 		});
 	}
 	getPlayer(id) {
@@ -194,12 +198,14 @@ class World {
 			}
 		}
 
-		player.manageListening({ type: 'stop', channel: player.location, array: player.locationListeners });
-		player.location.kick(player);
+		// player.manageListening({ type: 'stop', channel: player.location, array: player.locationListeners });
+		player.location.kick(player, player.locationListeners, player.listeners);
 		if(player.guild) {
 			player.guild.shout('status', player.name + ' went home.');
 		}
-		
+		player.destroyListeners();
+		this.delete(`player: ${player.id}`, player.personalListener);
+		this.delete(`player: ${player.name}`, player.personalListener);
 		this.players[player.id] = null;
 		console.log('Player #' + player.id + ' left the game.');
 		return true;

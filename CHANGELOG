@@ -1,3 +1,7 @@
+Chat:
+- location-wide messages
+- private messages (@`player_nick` message)
+
 Inventory & Equipment:
 - inventory -> inventory
 - inventory -> equipment

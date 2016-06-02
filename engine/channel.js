@@ -3,7 +3,7 @@
 const Check = require('./check.js');
 
 class Channel {
-	constructor(config) {
+	constructor(config = {}) {
 		this.name = '[' + config.name + ']: ';
 		this.events = {};
 	}

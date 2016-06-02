@@ -12,7 +12,7 @@ const Location = class LOCATION extends Channel {
 		this.id = config.id;
 		this.players = config.players;
 	}
-	enter(player) {
+	enter(player, events, listeners) {
 		const isPlayer = player instanceof Character;
 		if(!isPlayer) {
 			return !!console.warn('This is not a player.');
@@ -23,10 +23,12 @@ const Location = class LOCATION extends Channel {
 			return !!console.warn('This player is already in this location.');
 		}
 
+		events.map(event => this.listen(event, listeners[event]));
 		this.shout('chat', 'New player: ' + player.name);
+		player.location = this;
 		return this.players[player.id] = true;
 	}
-	leave(player) {
+	leave(player, events, listeners) {
 		const isPlayer = player instanceof Character;
 		if(!isPlayer) {
 			return !!console.warn('This is not a player.');
@@ -38,10 +40,12 @@ const Location = class LOCATION extends Channel {
 		}
 		
 		this.players[player.id] = null;
+		events.map(event => this.delete(event, listeners[event]));
 		return true;
 	}
-	kick(player) { // no checking, just kick him out (called from inside Game object)
+	kick(player, events, listeners) { // no checking, just kick him out (called from inside Game object)
 		this.players[player.id] = null;
+		events.map(event => this.delete(event, listeners[event]));
 	}
 };
 

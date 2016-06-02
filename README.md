@@ -9,4 +9,4 @@ View is going to be isometric (probably). Control over your character will be ha
 
 // ----------------
 
-<b>This is just the beginning. It's going to take me probably few years until it's done, so don't get too excited for now.</b>
+<b>This is just the beginning. It's going to take me probably a few years until it's done, so don't get too excited for now.</b>

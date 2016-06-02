@@ -1,13 +1,21 @@
 'use strict';
 
 class Equipment {
-	constructor(root) {
+	constructor(channel, root) {
+		this.channel = channel;
 		this.root = root;
 		this.slots = {};
 
-		this.init();
+		// this.init();
+
+		this.channel.listen('ws: equipment', this.init.bind(this));
 	}
-	init() {
+	init(slots) {
+		this.slots = slots;
+		this.render();
+		this.channel.shout('drag: bind', this.root);
+	}
+	render() {
 		m.render(this.root, this.view());
 	}
 	view() {

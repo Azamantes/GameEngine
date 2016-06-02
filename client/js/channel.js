@@ -1,10 +1,10 @@
 class Channel {
-	constructor(config) {
+	constructor(config = {}) {
 		this.name = '[' + config.name + ']: ';
 		this.events = {};
 	}
 	listen(event, listener) {
-		const isListener = Check.this(listener) === Check.function;
+		const isListener = typeof listener === 'function';
 		if(!isListener) {
 			console.error('Provided listener is not a function.');
 			return false;

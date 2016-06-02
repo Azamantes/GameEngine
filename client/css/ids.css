@@ -34,3 +34,19 @@ hr {
 	overflow-y: auto;
 	font-size: 13px;
 }
+#chat_input {
+	position: absolute;
+	outline: 1px solid darkgrey;
+	bottom: 35%;
+	left: 25%;
+	width: 49%;
+}
+
+#canvas {
+	position: absolute;
+	top: 1%;
+	left: 15%;
+	width: 70%;
+	height: 50%;
+	outline: 1px solid darkgrey;
+}

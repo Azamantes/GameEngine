@@ -1,6 +1,8 @@
 class DragDrop {
-	constructor(ws) {
-		this.websocket = ws;
+	constructor(channel, send) {
+		this.channel = channel;
+		this.send = send;
+
 		this.element = null;
 		this.elementParent = null;
 		this.eqSlotList = ['head', 'ring1', 'ring2', 'neck', 'chest',
@@ -12,6 +14,21 @@ class DragDrop {
 		this.targetString = 'TDIMG';
 
 		this.queue = [];
+	
+		this.channel.listen('drag: bind', this.bindNode.bind(this));
+		this.channel.listen('ws: dragdrop', this.handle.bind(this));
+	}
+	handle(message) {
+		switch(message) {
+			case 'Success': {
+				this.callFromQueue();
+				break;
+			}
+			case 'Failure': {
+				this.removeFromQueue();
+				break;
+			}
+		}
 	}
 	bindNode(node) {
 		node.addEventListener('dragstart', this.drag.bind(this));
@@ -48,7 +65,7 @@ class DragDrop {
 		const slotFrom = this.element.tagName === 'IMG'? this.elementParent.id : this.element.id;
 		const slotTo = target === 'IMG'? event.target.parentNode.id : event.target.id;
 
-		this.websocket.sendJSON({
+		this.send({
 			event: 'containerDragDrop',
 			from: slotFrom,
 			to: slotTo,

@@ -1,0 +1,6 @@
+moge przekazac caly obiekt i niech sobie modul z niego korzysta
+moge przekazac tylko konkretne funkcje robiace tylko jedna okreslona rzecz i nic wiecej i niech sobie modul z tego jakos na swoj sposob korzysta
+albo pub suba zrobic dla websocketa akurat i niech sobie moduly nasluchuja
+
+albo niech sobie kazdy modul nasluchuje
+albo niech gracz przez interfejs bedzie rozdzielal te eventy

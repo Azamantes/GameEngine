@@ -28,6 +28,12 @@ class User {
 		this.connected = false;
 		this.socket = config.socket;
 		this.player = null;
+
+		
+		// gracze beda potrzebowali kanalu do komunikacji miedzy soba, nie wszystko bedzie na caly swiat szlo
+		// prywatne wiadomosci, handel, duele etc. beda interakcja typu gracz-gracz 1v1
+		// kazdy gracz musi byc kanalem sam w sobie
+		// trzeba jeszcze czyscic te zbindowane funkcje gdy gracz zerwie polaczenie z serwerem 
 	}
 	handleMessage(data) { // when 'production-ready' this has to be in try-catch
 		// try {
@@ -150,6 +156,54 @@ class User {
 			data: swapped? 'Success' : 'Failure',
 		});
 	}
+	chatInput(message) {
+		// tu trzeba obsluzyc jakos te wszystkie komendy z czatu
+		// prywatne wiadomosci
+		// globalne wiadomosci
+		// gildyjne wiadomosci
+		// grupowe wiadomosci
+		// + komendy typu zapros gracza do grupy/gildii, wywal etc.
+	}
+	chat(data) {
+
+		console.log('To jest chat:', data);
+
+		const message = data.data;
+		// console.log(`Chat: '${message}'`);
+
+		if(!message) {
+			return;
+		}
+
+		const isString = Check.this(message) === Check.string;
+		if(!isString) {
+			return;
+		}
+
+		switch(message[0]) {
+			case '/': { // command
+
+			}
+			case '@': { // command
+				const [name, string] = message.slice(2).split('` ');
+				console.log(`Name: ${name}`);
+				console.log(`String: ${string}`);
+				Game.shout(`player: ${name}`, {
+					event: 'chat',
+					data: `from [${this.player.name}]: ${string}`,
+				});
+				this.unicast({
+					event: 'chat',
+					data: `to [${name}]: ${string}`,
+				});
+				break;
+			}
+			default: { // normal message
+				console.log('normal message:', message);
+				this.player.chatMessage(message);
+			}
+		}
+	}
 };
 User.prototype.events = new Set([
 	// to allow only certain actions. You may want to keep some methods unaccesible from outside
@@ -161,6 +215,7 @@ User.prototype.events = new Set([
 	'showInventory',
 	'inventoryMoveItem',
 	'containerDragDrop',
+	'chat',
 ]);
 
 module.exports = { User, Init };

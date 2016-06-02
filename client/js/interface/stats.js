@@ -1,10 +1,15 @@
 'use strict';
 
 class Stats {
-	constructor(root) {
+	constructor(channel, send, root) {
+		this.channel = channel;
+		this.send = send;
 		this.root = root;
+
 		this.nodes = {};
 		this.list = [];
+
+		this.channel.listen('stats: init', this.parse.bind(this));
 	}
 	push(key, value) {
 		this.nodes[key] = this.list.push(value) - 1;
